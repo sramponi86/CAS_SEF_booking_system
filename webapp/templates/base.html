@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <!-- <link rel="stylesheet" href="{{ url_for('static', filename= 'css/style.css') }}"> -->
+  <title>{{ company.name }}</title>
+</head>
+<body>
+  <nav class="navbar bg-dark top bg-body mb-3" data-bs-theme="dark">
+    <div class="container-fluid">
+      <div class="navbar-brand">
+        <a class="link-light link-offset-2 link-underline-opacity-0 link-underline-opacity-50-hover" title="Go to Welcome Screen" href="/" >
+          <span class="bi-house"></span> {{ company.name }}
+        </a> - {% block title %} {% endblock title %}
+        {% if session['customer_id'] %}
+      </div>
+      <div class="nav-item">
+        <form id="date" action="/set_date" class="row row-cols-sm-auto g-1 align-items-center">
+          <div class="col-6">
+            <div class="input-group flex-nowrap">
+              <input title="Today" type="date" name="today" value="{{ today }}" class="form-control-sm"
+                onblur='date.submit()'
+                >
+              <button class="btn btn-sm btn-primary" type="submit">Set</button>
+            </div>
+          </div>  
+          <div class="col-6">
+            <div class="btn-group" role="group">
+              <button type="button" class="btn btn-primary  btn-sm">{{ session['customer_name'] }}</button>
+              <a type="button" class="btn btn-primary  btn-sm" title="Logout" href="/logout"><span class="bi-box-arrow-right"></span></a>  
+            </div>
+          </div>
+          <input type="hidden" name="next" value="{{ request.path }}">
+          <input type="hidden" name="rq" value="{{ session['rq'] }}">
+        </form>
+      </div>
+      {% endif %}
+    </div>
+  </nav>
+  <!-- Bootstrap JS -->
+  <div class="container">
+    {% block content %} {% endblock %}
+  </div>
+  <nav class="navbar fixed-bottom bg-body-tertiary">
+    <div class="container-fluid">
+      <small>Software Engineering Fundamentals 2024</small>
+    </div>
+  </nav>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+  {% include 'message.html' %}
+</body>
+</html>

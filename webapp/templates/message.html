@@ -1,0 +1,35 @@
+{% with msg = get_flashed_messages(with_categories=True) %}
+{% if msg %}
+{% for category, message in msg %}
+{% if category=="danger" %}
+<div class="alert alert-{{category}} alert-dismissible fade show m-2 g-5" role="alert">
+  <p><strong>The Application encountered an error:</strong></p>
+  <pre>{{ message }}</pre>
+  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+{% else %}
+<!-- Modal -->
+<div class="modal fade" id="notification" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Notification</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        {{ message }}
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Got it</button>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+  var myModal = new bootstrap.Modal(document.getElementById('notification'));
+  myModal.show();
+</script>
+{% endif %}
+{% endfor %}
+{% endif %}
+{% endwith %}

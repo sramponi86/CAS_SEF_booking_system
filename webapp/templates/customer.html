@@ -1,0 +1,148 @@
+{% extends 'base.html' %}
+{% block title %} Customer Dashboard {% endblock %}
+
+{% block content %}
+<div class="row mt-2">
+  <div class="col table-responsive text-nowrap">
+    {% if company.categories.get()|length == 0 %}
+    <p>There are no car categories configured. Please register some cars in the <a href="/admin">admin interface</a>.</p>
+    {% else %}
+    <table class="table">
+      <thead>
+        <tr>
+          <th scope="col"></th>
+          <th scope="col">From</th>
+          <th scope="col">Until</th>
+          <th scope="col"><i class="bi bi-tags-fill"></i> Category</th>
+          <th scope="col"><i class="bi bi-car-front-fill"></i> Booked Car</th>
+          <th scope="col">Action</th>
+          <th scope="col"><i class="bi bi-car-front-fill"></i> Rented Car</th>
+        </tr>
+      </thead>
+      <tbody class="table-group-divider">
+        {% for booking in company.bookings.find_by_customer_id(session['customer_id'])|sort(attribute="period_end")|sort(attribute="period_start") %}
+        <form>
+          <tr>
+            <td>
+              <button type="submit" class="btn btn-light btn-sm " name="action" value="delete_booking" title="Delete Booking"><span class="bi-x"></span></button>
+            </td>
+            <td>{{booking.period_start}}</td>
+            <td>{{booking.period_end}}</td>
+            <td>{{booking.category.name}}</td>
+            <td>{{booking.car.model}}</td>
+            <td>
+              {% if company.rentals.find_by_booking_id(booking.id) == None %}
+              <button type="submit" class="btn btn-success btn-sm " name="action" value="add_rental" title="Rent Car"><span class="bi-car-front-fill"></span> Rent</button>
+              {% else %}
+              <button type="submit" class="btn btn-danger btn-sm " name="action" value="delete_rental" title="Give Car Back"><span class="bi-car-front-fill"></span> Return</button>
+              {% endif %}
+            </td>
+            <td>
+              {% if company.rentals.find_by_booking_id(booking.id) %}
+              {{ company.rentals.find_by_booking_id(booking.id).car.model }}
+              {% endif %}
+            </td>
+          </tr>
+          <input type="hidden" name="id" value="{{ booking.id }}">
+          <input type="hidden" name="rq" value="{{ session['rq'] }}">
+        </form>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% endif %}
+  </div>
+</div>
+<div class="row mt-2">
+  <div class="col">
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#categoryModal">
+      <i class="bi bi-tags-fill"></i> Book by Category
+    </button>
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#carModal">
+      <i class="bi bi-car-front-fill"></i> Book a Car directly
+    </button>
+  </div>
+</div>
+
+<!-- Modals -->
+<div class="modal fade" id="categoryModal" tabindex="-1" >
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form>
+        <input type="hidden" name="action" value="add_category_booking">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel"><i class="bi bi-tags-fill"></i> Book by Category</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="row g-3">
+            <div class="col-sm-6">
+              <label for="period_start" class="form-label">Start</label>
+              <input type="date" class="form-control" id="period_start" name="period_start" value="{{ today }}" required>
+            </div>
+            <div class="col-sm-6">
+              <label for="period_start" class="form-label">End</label>
+              <input type="date" class="form-control" id="period_end" name="period_end" value="{{ today }}" required>
+            </div>
+          </div>
+          <div class="row mt-3">
+            <div class="col-12">
+              <label for="category_id" class="form-label">Category</label>
+              <select class="form-select" multiple name="id" id="category_id" required>
+                {% for category in company.categories.get()|sort(attribute="name") %}
+                <option value="{{category.id}}">{{category.name}}</option>
+                {% endfor %}
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary">Add Booking</button>
+        </div>
+        <input type="hidden" name="rq" value="{{ session['rq'] }}">
+      </form>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="carModal" tabindex="-1" >
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form>
+        <input type="hidden" name="action" value="add_car_booking">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel"><i class="bi bi-car-front-fill"> </i>Book a Car directly</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="row g-3">
+            <div class="col-sm-6">
+              <label for="period_start" class="form-label">Start</label>
+              <input type="date" class="form-control" id="period_start" name="period_start" value="{{ today }}" required>
+            </div>
+            <div class="col-sm-6">
+              <label for="period_start" class="form-label">End</label>
+              <input type="date" class="form-control" id="period_end" name="period_end" value="{{ today }}" required>
+            </div>
+          </div>
+          <div class="row mt-3">
+            <div class="col-12">
+              <label for="car_id" class="form-label">Car</label>
+              <select class="form-select" multiple name="id" id="car_id" required>
+                {% for car in company.cars.get()|sort(attribute="model")|sort(attribute="category.name") %}
+                <option value="{{car.id}}">{{car.category.name}}: {{car.model}}</option>
+                {% endfor %}
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary">Add Booking</button>
+        </div>
+        <input type="hidden" name="rq" value="{{ session['rq'] }}">
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

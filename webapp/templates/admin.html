@@ -1,0 +1,129 @@
+{% extends 'base.html' %}
+{% block title %} Admin Panel {% endblock %}
+
+{% block content %}
+{% if company != None %}
+<h3>User Management</h3>
+<div class="row mt-3 mb-4">
+  <div class="col">
+    <div class="row row-cols-sm-auto g-1 align-items-center">
+      <form>
+        <input type="hidden" name="action" value="delete_customer">
+        <div class="col-12">
+          {% for customer in company.customers.get() %}
+          <div class="btn-group mb-1" role="group">
+            <button type="button" class="btn btn-secondary btn-sm "><span class="bi-person-fill"></span> {{customer.name}}</button>
+            <button type="submit" class="btn btn-secondary btn-sm " name="id" value="{{ customer.id }}"  title="Delete Customer"><span class="bi-x"></span></button>
+          </div>
+          {% endfor %}
+        </div>
+        <input type="hidden" name="rq" value="{{ session['rq'] }}">
+      </form>
+      <form>
+        <input type="hidden" name="action" value="add_customer">
+        <div class="col-12">
+          <div class="input-group input-group-sm mb-1">
+            <input size="7" type="text" class="form-control" placeholder="Customer" name="name" required>
+            <button class="btn btn-secondary" type="submit"  title="Add Customer"><span class="bi-plus"></span></button>
+          </div>
+        </div>
+        <input type="hidden" name="rq" value="{{ session['rq'] }}">
+      </form>
+    </div>
+  </div>
+</div>
+<h3>Car Management</h3>
+<div class="row mt-2">
+  <div class="col">
+    <div class="list-group">
+      {% for category in company.categories.get() %}
+      <div href="#" class="list-group-item list-group-item-secondary">
+        <form>
+          <input type="hidden" name="action" value="delete_category">
+          <div class="d-flex w-100 justify-content-between">
+            <h5 class="mb-2">{{ category.name }}</h5> <small><button type="submit" class="btn-close btn-sm"  title="Delete Category"name="id" value="{{ category.id }}"></button></small>
+          </div>
+          <input type="hidden" name="rq" value="{{ session['rq'] }}">
+        </form>
+        <div  class="row row-cols-sm-auto g-1 align-items-center">
+          <form>
+            <input type="hidden" name="action" value="delete_car">
+            <div class="col-12">
+              {% for car in company.cars.find_by_category_id(category.id) %}
+              <div class="btn-group mb-1" role="group">
+                <button type="button" class="btn btn-secondary btn-sm"><span class="bi-car-front-fill"></span> {{car.model}}</button>
+                <button type="submit" class="btn btn-secondary btn-sm " name="id" value="{{ car.id }}" title="Delete Car"><span class="bi-x"></span></button>
+              </div>
+              {% endfor %}
+            </div>
+            <input type="hidden" name="rq" value="{{ session['rq'] }}">
+          </form>
+          <form>
+            <input type="hidden" name="action" value="add_car">
+            <div class="col-12">
+              <div class="input-group input-group-sm mb-1">
+                <input size="7" type="text" class="form-control" placeholder="Car model" name="name" required>
+                <button class="btn btn-secondary" type="submit"><span class="bi-plus"  title="Add Car"></span></button>
+              </div>
+            </div>
+            <input type="hidden" name="category_id" value="{{ category.id }}">
+            <input type="hidden" name="rq" value="{{ session['rq'] }}">
+          </form>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+<div class="row mt-3">
+  <div class="col">
+    <form class="row row-cols-sm-auto g-1 align-items-center">
+      <input type="hidden" name="action" value="add_category">
+      <div class="col-12">
+        <label for="category_name" class="form-label">Add Category</label>
+        <div class="input-group">
+          <input type="text" class="form-control" placeholder="Car category name" id="category_name" name="name" required>
+          <button class="btn btn-secondary" type="submit"  title="Add Category">Add</button>
+        </div>
+      </div>
+      <input type="hidden" name="rq" value="{{ session['rq'] }}">
+    </form>
+  </div>
+</div>
+{% else %}
+<p>Welcome! Please create a fresh company by resetting everything.</p>
+{% endif %}
+<div class="row mt-3 mb-5">
+  <div class="col text-end">
+    <hr>
+    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#exampleModal">
+      Reset Everything
+    </button>
+  </div>
+</div>
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form action="/reset">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel">Create Fresh Company (Reset)</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <p>This action can't be undone.</p>
+          <div class="mb-3">
+            <label for="company_name" class="col-form-label">Company Name:</label>
+            <input type="text" class="form-control" id="company_name" name="company_name" required>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-danger"><i class="bi bi-exclamation-triangle-fill"></i> Reset and create fresh company <i class="bi bi-exclamation-triangle-fill"></i></button>
+        </div>
+        <input type="hidden" name="rq" value="{{ session['rq'] }}">
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

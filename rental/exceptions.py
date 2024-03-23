@@ -1,0 +1,2 @@
+class RentalException(Exception):
+  pass

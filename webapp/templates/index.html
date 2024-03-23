@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block title %} Welcome {% endblock %}
+
+{% block content %}
+<div class="row mt-2 g-2">
+  <div class="col-sm">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title"><span class="bi-gear-fill"></span> Admin Interface</h5>
+        <p class="card-text">Register Categories and Cars and Users</p>
+        <a href="/admin" class="btn btn-primary">Open Admin Panel</a>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title"><span class="bi-people-fill"></span> Customer Interface</h5>
+        <p class="card-text">Book cars or categories and rent cars</p>
+        <a href="/customer" class="btn btn-primary">Open Customer View</a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

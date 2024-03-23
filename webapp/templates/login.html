@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block title %} Login {% endblock %}
+
+{% block content %}
+<h3>User Selection</h3>
+{% if company.customers.get()|length == 0 %}
+<p>There are no customers configured. Please register some customers in the <a href="/admin">admin interface</a>.</p>
+{% else %}
+<p>Please choose an existing user to log in.</p>
+{% endif %}        
+<div class="row mt-3 mb-4">
+  <div class="col">
+    <form>
+      {% for customer in company.customers.get() %}
+      <button type="submit" name="set_customer" value="{{ customer.id }}" class="btn btn-primary btn-sm"><span class="bi-person-fill"></span> {{ customer.name }}</button>
+      {% endfor %}
+      <input type="hidden" name="rq" value="{{ session['rq'] }}">
+    </form>
+  </div>
+</div>
+{% endblock %}

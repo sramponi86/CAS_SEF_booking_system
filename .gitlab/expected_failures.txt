@@ -1,0 +1,3 @@
+tests.unittests.CustomersTests.test_find_by_id
+tests.unittests.CustomersTests.test_contains
+tests.unittests.CustomersTests.test_find_by_id_exception
