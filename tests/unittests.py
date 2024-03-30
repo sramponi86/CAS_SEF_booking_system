@@ -1,7 +1,6 @@
 import unittest
 import datetime as dt
 from rental.company import Company
-from rental.categories import Category
 from rental.cars import Car
 from rental.customers import Customer
 from rental.exceptions import RentalException
@@ -12,11 +11,9 @@ class CarTests(unittest.TestCase):
     pass
 
   def test_constructor(self):
-    category = Category(1, 'Medium')
-    car = Car(1, 'Opel Kadett', category)
+    car = Car(1, 'Opel Kadett')
     self.assertEqual(car.id, 1, 'incorrect id after construction')
     self.assertEqual(car.model, 'Opel Kadett', 'incorrect model after construction')
-    self.assertEqual(car.category, category)
 
 class CustomerTests(unittest.TestCase):
   def setUp(self):
@@ -64,12 +61,9 @@ class CompanyTests(unittest.TestCase):
   def setUp(self):
     company = Company('Šmertz')
     
-    category_small = company.categories.add('Small')
-    category_medium = company.categories.add('Medium')
-    
-    company.cars.add('D12', category_small.id)
-    company.cars.add('VW Jetta', category_medium.id)
-    company.cars.add('Bon Voyage', category_medium.id)
+    company.cars.add('D12')
+    company.cars.add('VW Jetta')
+    company.cars.add('Bon Voyage')
     
     company.customers.add('Random House')
     company.customers.add('Mega Corp')
@@ -109,36 +103,7 @@ class CompanyTests(unittest.TestCase):
     booking = self.company.bookings.add(customer.id, dt.date(2024, 3, 10), dt.date(2024, 3, 16), car_id=car.id)
     controller.setToday(dt.date(2024, 3, 10))
     with self.assertRaises(RentalException):
-      self.company.rentals.add(booking.id)
-
-  def test_add_rental_by_car_category_unique(self):
-    customer = self.company.customers.get()[1] # Any customer ...
-    category = self.company.categories.get()[1] # ... and category would do
-
-    booking = self.company.bookings.add(customer.id, dt.date(2024, 3, 7), dt.date(2024, 3, 14), category_id=category.id)
-    controller.setToday(dt.date(2024, 3, 7))
-    rental = self.company.rentals.add(booking.id)
-
-    self.assertIn(rental.car, self.company.cars.find_by_category_id(category.id))
-
-  def test_add_rental_by_car_category_2(self):
-    customer = self.company.customers.get()[0]
-    category = self.company.categories.find_by_name('Medium')
-
-    available_cars_in_category = self.company.cars.find_by_category_id(category.id)
-
-    booking = self.company.bookings.add(customer.id, dt.date(2024, 3, 7), dt.date(2024, 3, 14), category_id=category.id)
-    controller.setToday(dt.date(2024, 3, 7))
-    rental_1 = self.company.rentals.add(booking.id)
-
-    self.assertIn(rental_1.car, available_cars_in_category)
-
-    booking = self.company.bookings.add(customer.id, dt.date(2024, 3, 6), dt.date(2024, 3, 8), category_id=category.id)
-    controller.setToday(dt.date(2024, 3, 6))
-    rental_2 = self.company.rentals.add(booking.id)
-
-    available_cars_in_category.remove(rental_1.car)
-    self.assertIn(rental_2.car, available_cars_in_category)    
+      self.company.rentals.add(booking.id)    
 
 if __name__ == '__main__':
   unittest.main()

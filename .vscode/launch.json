@@ -12,7 +12,7 @@
       "module": "flask",
       "cwd": "${workspaceFolder}",
       "env": {
-        "FLASK_APP": "webapp/run.py",
+        "FLASK_APP": "webapp/app.py",
         "FLASK_DEBUG": "1",
       },
       "args": [

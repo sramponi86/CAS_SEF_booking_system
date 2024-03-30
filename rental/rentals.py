@@ -63,48 +63,25 @@ class Rentals:
     Raises:
         RentalException: If the start date of the booking does not concide with today's date.
         RentalException: If a booking is for a specific car and that car is already rented.
-        RentalException: If no car for a specific category is available.
 
     Returns:
         Rental: The newly created Rental instance, added to the list.
     """
     # NOTE: Could allow
-    #         * a different car if from the same booking car category
     #         * a different period_start and period_end, e.g. if a sub-period of the original one
     booking = self.company.bookings.find_by_id(booking_id)
     car = booking.car
-    category = booking.category
     period_start = booking.period_start
     period_end = booking.period_end
     rental = None
     if controller.today != period_start:
       raise RentalException(f'A car can only be picked up on the start-date of the booking ({period_start}). But today is {controller.today}')
-    if car != None:
-      rentals_for_car = [r for r in self.rentals if r.car.id == car.id]
-      for r in rentals_for_car:
-        if (max(period_start, period_end) >= min(r.booking.period_start, r.booking.period_end) and 
-            min(period_start, period_end) <= max(r.booking.period_start, r.booking.period_end)):
-          raise RentalException(f'Car {car.model} ({ car.id }) cannot be rented for period {period_start} - {period_end}, because it has already been rented.')
-      rental = Rental(controller.nextId(), booking, car)
-    elif category != None:
-      for car in self.company.cars.get():
-        if car.category == category:
-          rentals_for_car = [r for r in self.rentals if r.car.id == car.id]
-          # TODO: Avoide duplicating code/business logic from the preceding if-block
-          already_rented = False
-          for r in rentals_for_car:
-            if (max(period_start, period_end) >= min(r.booking.period_start, r.booking.period_end) and 
-                min(period_start, period_end) <= max(r.booking.period_start, r.booking.period_end)):
-              already_rented = True
-              break # Stop iterating over/looking at r in rentals_for_car
-
-          if not already_rented:
-            rental = Rental(controller.nextId(), booking, car)
-            break # Stop iterating over car in self.cars
-      if rental == None:
-        raise RentalException(f'No car is available in category {category.name} for period {period_start} - {period_end}.')
-    else:
-      assert(False) # Should never happen
+    rentals_for_car = [r for r in self.rentals if r.car.id == car.id]
+    for r in rentals_for_car:
+      if (max(period_start, period_end) >= min(r.booking.period_start, r.booking.period_end) and 
+          min(period_start, period_end) <= max(r.booking.period_start, r.booking.period_end)):
+        raise RentalException(f'Car {car.model} ({ car.id }) cannot be rented for period {period_start} - {period_end}, because it has already been rented.')
+    rental = Rental(controller.nextId(), booking, car)
     assert(rental != None) # Should always hold
     print(f'Adding {rental}')
     self.rentals.append(rental)

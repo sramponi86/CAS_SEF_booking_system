@@ -3,7 +3,6 @@ from rental import controller
 from rental.exceptions import RentalException
 from rental.company import Company
 from rental.customers import Customer
-from rental.categories import Category
 from rental.cars import Car
 from datetime import date
 
@@ -15,18 +14,12 @@ class Booking:
   Attributes:
       id (int): ID of the booking.
       customer (Customer): The Customer making the booking.
-      category (Category, optional): The Category requested (see note).
       car (Car, optional): The specific Car requested (see note).
       period_start (date): The start date of the booking.
       period_end (date): The end date of the booking.
-  
-  Note:
-      `car` and `category` can be `None`.
-      One of the attributes `car` or `category` has to be `None` but not both.
   """
   id: int
   customer: Customer
-  category: Category
   car: Car
   period_start: date = field(repr=False)
   period_end: date = field(repr=False)
@@ -63,42 +56,27 @@ class Bookings:
     """
     return self.bookings.copy()
 
-  def add(self, customer_id:int , period_start: date, period_end: date, category_id: int = None, car_id: int = None) -> Booking:
+  def add(self, customer_id:int , period_start: date, period_end: date, car_id: int = None) -> Booking:
     """
     Create a booking and add it to the collection.
 
     Creates a new booking based on the provided details and adds it to the internal list of bookings.
-    It requires the customer's ID and the start and end dates of the rental period. Optionally, a specific car or
-    car category can be specified for the booking. The method ensures that either a car or a category is specified,
-    but not both.
+    It requires the customer's ID and the start and end dates of the rental period. A specific car must
+    be specified for the booking.
 
     Args:
         customer_id (int): The ID of the customer making the booking.
         period_start (date): The start date of the booking.
         period_end (date): The end date of the booking.
-        category_id (int, optional): The ID of the car category requested. Defaults to None.
         car_id (int, optional): The ID of the specific car requested. Defaults to None.
-
-    Raises:
-        RentalException: If both `car_id` and `category_id` are provided, indicating a conflict in booking parameters.
-        RentalException: If neither `car_id` nor `category_id` is provided, indicating insufficient booking details.
 
     Returns:
         Booking: The newly create Booking instance, added to the list of bookings.
     """
-    if car_id == None and category_id == None:
-      raise RentalException(f'Either car_id or category_id must be provided')
-    if car_id != None and category_id != None:
-      raise RentalException(f'Only one of car_id and category_id can be provided, not both')
     # TODO: Check that period_start < period_end
     customer = self.company.customers.find_by_id(customer_id)
-    car, category = None, None
-    if car_id != None:
-      car = self.company.cars.find_by_id(car_id)
-      category = car.category
-    else:
-      category = self.company.categories.find_by_id(category_id)
-    booking = Booking(controller.nextId(), customer, category, car, period_start, period_end)
+    car = self.company.cars.find_by_id(car_id)
+    booking = Booking(controller.nextId(), customer, car, period_start, period_end)
     print(f'Adding {booking}')
     self.bookings.append(booking)
     return booking

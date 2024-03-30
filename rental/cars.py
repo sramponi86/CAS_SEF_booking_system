@@ -2,7 +2,6 @@ from dataclasses import dataclass, field
 from rental import controller
 from rental.exceptions import RentalException
 from rental.company import Company
-from rental.categories import Category
 
 @dataclass
 class Car:
@@ -12,11 +11,9 @@ class Car:
   Attributes:
       id (int): ID of the car.
       model (str): The model name of the car.
-      category (Category): The category the car belongs to.
   """
   id: int
   model: str
-  category: Category = field(repr=False)
 
 class Cars:
   """
@@ -49,22 +46,20 @@ class Cars:
     """
     return self.cars.copy()
 
-  def add(self, model: str, category_id: int) -> Car:
+  def add(self, model: str) -> Car:
     """
     Add a new car to the fleet.
 
-    Creates a new Car instance based on the provided model name and category ID, 
+    Creates a new Car instance based on the provided model name 
     and adds it to the internal list of cars.
 
     Args:
         model (str): The model name of the new car.
-        category_id (int): The ID of the category the new car belongs to.
 
     Returns:
         Car: The newly created Car instance.
     """
-    category = self.company.categories.find_by_id(category_id)
-    car = Car(controller.nextId(), model, category)
+    car = Car(controller.nextId(), model)
     print(f'Adding {car}')
     self.cars.append(car)
     return car
@@ -111,17 +106,4 @@ class Cars:
       raise RentalException(f"Couldn't find car with id {id}")
     return car
 
-  def find_by_category_id(self, category_id: int):
-    """
-    Find cars by their category ID.
-
-    Returns a list of cars that belong to the specified category.
-
-    Args:
-        category_id (int): The ID of the category to find cars in.
-
-    Returns:
-        list[Car]: A list of Car instances that belong to the specified category.
-    """
-    return [car for car in self.cars if car.category.id == category_id]
 
