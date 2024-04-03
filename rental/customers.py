@@ -58,10 +58,7 @@ class Customers:
     Returns:
         Customer: The newly created Customer instance, added to the list.
     """
-    customer = Customer(controller.nextId(), name)
-    print(f'Adding {customer}')
-    self.customers.append(customer)
-    return customer
+    pass
 
   def delete(self, id: int):
     """
