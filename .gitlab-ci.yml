@@ -5,8 +5,8 @@ stages:
   stage: test
   script:
     # - cd project/$version
-    # - python -m unittest discover --pattern=unittests.py
-    - python .gitlab/run_unittests.py --pattern=unittests.py --expected-failures=.gitlab/expected_failures.txt
+    - python -m unittest discover --pattern=unittests.py
+    # - python .gitlab/run_unittests.py --pattern=unittests.py --expected-failures=.gitlab/expected_failures.txt
   # parallel:
   #   matrix:
   #     - version: [weekend-1]
