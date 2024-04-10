@@ -27,7 +27,16 @@ def nextId():
   current_id += 1
   return current_id
 
+def setId(id: int):
+  """
+  Sets the current unique id for entities. 
+  This is used to reestablish id's after a restart from persistence.
 
+  Args:
+      id (int): The current id to be used when providing unique ids
+  """
+  global current_id
+  current_id = id
 
 
 

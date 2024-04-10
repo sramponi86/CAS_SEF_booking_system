@@ -14,6 +14,15 @@ class Car:
   """
   id: int
   model: str
+  
+  def getLabel(self):
+    """
+    Creates a human readable Label of the Car-Entity (used in the Webapp)
+
+    Returns:
+        str: The human readable label.
+    """
+    return f'{self.model} ({self.id})'
 
 class Cars:
   """

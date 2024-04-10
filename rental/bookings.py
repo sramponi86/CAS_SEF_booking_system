@@ -14,7 +14,7 @@ class Booking:
   Attributes:
       id (int): ID of the booking.
       customer (Customer): The Customer making the booking.
-      car (Car, optional): The specific Car requested (see note).
+      car (Car): The specific Car requested
       period_start (date): The start date of the booking.
       period_end (date): The end date of the booking.
   """
@@ -56,7 +56,7 @@ class Bookings:
     """
     return self.bookings.copy()
 
-  def add(self, customer_id:int , period_start: date, period_end: date, car_id: int = None) -> Booking:
+  def add(self, customer_id: int, period_start: date, period_end: date, car_id: int) -> Booking:
     """
     Create a booking and add it to the collection.
 
@@ -68,17 +68,17 @@ class Bookings:
         customer_id (int): The ID of the customer making the booking.
         period_start (date): The start date of the booking.
         period_end (date): The end date of the booking.
-        car_id (int, optional): The ID of the specific car requested. Defaults to None.
+        car_id (int): The ID of the specific car requested.
 
     Returns:
         Booking: The newly create Booking instance, added to the list of bookings.
     """
-    # TODO: Check that period_start < period_end
     customer = self.company.customers.find_by_id(customer_id)
     car = self.company.cars.find_by_id(car_id)
     booking = Booking(controller.nextId(), customer, car, period_start, period_end)
     print(f'Adding {booking}')
     self.bookings.append(booking)
+    
     return booking
 
   def delete(self, id: int):
