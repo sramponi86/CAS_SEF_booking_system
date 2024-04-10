@@ -2,8 +2,11 @@
   stage: test
   script:
     - pip install coverage
-    - coverage run -m unittest discover --pattern='*tests.py'
+    # allow this to fail in order to generate coverage report
+    - coverage run -m unittest discover --pattern='*tests.py' || true
     - coverage report --omit="venv/*","tests/*","webapp/*"
+    # this actually makes the pipeline fail if tests don't pass
+    - python -m unittest discover --pattern="*tests.py"
   parallel:
     matrix:
       - version: [weekend-1]
