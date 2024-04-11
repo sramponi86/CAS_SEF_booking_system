@@ -10,8 +10,3 @@ This will be your team's repository for the Software Engineering Fundamentals co
 If you are experiencing any issues feel free to book a support slot [here](https://moodle-app2.let.ethz.ch/mod/scheduler/view.php?id=1034105).
 
 Have fun and happy coding!
-
-## Running the Web Application
-
-* Install [Flask](https://flask.palletsprojects.com/en/3.0.x/) using `pip3 install flask` or `pip install flask`.
-* Run on command line by entering `flask run` in the directory `webapp` as working directory or by using the run configuration `Python: Flask` in VS Code.
