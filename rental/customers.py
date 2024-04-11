@@ -14,6 +14,15 @@ class Customer:
   """
   id: int
   name: str
+    
+  def getLabel(self):
+    """
+    Creates a human readable Label of the Car-Entity (used in the Webapp)
+
+    Returns:
+        str: The human readable label.
+    """
+    return f'{self.name} ({self.id})'
   
 class Customers:
   """
@@ -58,7 +67,10 @@ class Customers:
     Returns:
         Customer: The newly created Customer instance, added to the list.
     """
-    pass
+    customer = Customer(controller.nextId(), name)
+    print(f'Adding {customer}')
+    self.customers.append(customer)
+    return customer
 
   def delete(self, id: int):
     """
@@ -94,7 +106,7 @@ class Customers:
 
     return False # TODO: Replace by proper implementation
 
-  def find_by_id(self, id:int):
+  def find_by_id(self, id: int):
     """
     Find a customer by its ID.
 

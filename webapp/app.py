@@ -26,7 +26,7 @@ def inject_data():
 def persist_company():
   Path('./persistence').mkdir(parents=True, exist_ok=True)
   file = open('./persistence/state.data','wb')
-  pickle.dump(company, file)
+  pickle.dump([company, controller.current_id] , file)
   file.close()
 
 def load_persisted_company():
@@ -36,7 +36,8 @@ def load_persisted_company():
     return False
   file = open('./persistence/state.data','rb')
   try:
-    company = pickle.load(file)
+    company, id = pickle.load(file)
+    controller.setId(id)
     print('Persistent company data loaded successfully.')
     return True
   except:
@@ -50,7 +51,7 @@ def load_persisted_company():
 # https://flask.palletsprojects.com/en/3.0.x/tutorial/factory/
 load_persisted_company()
 
-# HACK: Such a message is reported by flask upon startup and handy since clickable in VSCode, but 
+# HACK: Such a message is reported by flask upon startup and handy since clickable in VS Code, but 
 # we currently suppress the output by setting log granularity to WARN. Moreover, host and port are
 # hardcoded here. I tried to find a better way, but failed (in reasonable time).
 print(" * Running on http://127.0.0.1:5000")
@@ -94,7 +95,7 @@ def customer():
         if action == "add_car_booking":
           period_start = date.fromisoformat(request.args.get('period_start'))
           period_end = date.fromisoformat(request.args.get('period_end'))
-          company.bookings.add(int(customer_id),period_start, period_end, car_id=int(id))
+          company.bookings.add(int(customer_id),period_start, period_end, int(id))
         if action == "delete_booking":
           company.bookings.delete(int(id))
         if action == "add_rental":
@@ -132,7 +133,7 @@ def login():
     set_customer = request.args.get('set_customer')
     if set_customer:
       session['customer_id'] = int(set_customer)
-      session['customer_name'] = company.customers.find_by_id(int(set_customer)).name
+      session['customer_name'] = company.customers.find_by_id(int(set_customer)).getLabel()
   update_request_number()
   if session.get('customer_id'):
     return redirect(url_for('customer'))
@@ -179,16 +180,8 @@ def admin():
           flash(f'A customer with name "{name}" exists already', 'warning')
       if action == "delete_customer":
         company.customers.delete(int(id))
-      if action == "add_category":
-        if not company.categories.contains(name):
-          company.categories.add(name)
-        else:
-          flash(f'A category with name "{name}" exists already', 'warning')
-      if action == "delete_category":
-        company.categories.delete(int(id))
       if action == "add_car":
-        category_id = int(request.args.get('category_id'))
-        company.cars.add(name, category_id)
+        company.cars.add(name)
       if action == "delete_car":
         company.cars.delete(int(id))
       persist_company()

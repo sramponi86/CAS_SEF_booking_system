@@ -1,15 +1,16 @@
-stages:
-  - test
-
 .unittests: # Hidden, thus not executed
   stage: test
   script:
-    # - cd project/$version
-    - python -m unittest discover --pattern=unittests.py
-    # - python .gitlab/run_unittests.py --pattern=unittests.py --expected-failures=.gitlab/expected_failures.txt
-  # parallel:
-  #   matrix:
-  #     - version: [weekend-1]
+    - pip install coverage
+    # allow this to fail in order to generate coverage report
+    - coverage run -m unittest discover --pattern='*tests.py' || true
+    - coverage report --omit="venv/*","tests/*","webapp/*"
+    # this actually makes the pipeline fail if tests don't pass
+    - python -m unittest discover --pattern="*tests.py"
+  parallel:
+    matrix:
+      - version: [weekend-1]
+  coverage: '/TOTAL.*\s+(\d+\%)/'
 
 # Use of '@dataclass' requires Python 3.7
 # unittests-3.6:

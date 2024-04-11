@@ -12,7 +12,7 @@
   <div class="col">
     <form>
       {% for customer in company.customers.get() %}
-      <button type="submit" name="set_customer" value="{{ customer.id }}" class="btn btn-primary btn-sm"><span class="bi-person-fill"></span> {{ customer.name }}</button>
+      <button type="submit" name="set_customer" value="{{ customer.id }}" class="btn btn-primary btn-sm"><span class="bi-person-fill"></span> {{ customer.getLabel() }}</button>
       {% endfor %}
       <input type="hidden" name="rq" value="{{ session['rq'] }}">
     </form>

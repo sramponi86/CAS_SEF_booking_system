@@ -27,7 +27,11 @@
             </td>
             <td>{{booking.period_start}}</td>
             <td>{{booking.period_end}}</td>
-            <td>{{booking.car.model}}</td>
+            <td>
+              {% if booking.car %}
+              {{booking.car.getLabel()}}
+              {% endif %}
+            </td>
             <td>
               {% if company.rentals.find_by_booking_id(booking.id) == None %}
               <button type="submit" class="btn btn-success btn-sm " name="action" value="add_rental" title="Rent Car"><span class="bi-car-front-fill"></span> Rent</button>
@@ -37,7 +41,7 @@
             </td>
             <td>
               {% if company.rentals.find_by_booking_id(booking.id) %}
-              {{ company.rentals.find_by_booking_id(booking.id).car.model }}
+              {{ company.rentals.find_by_booking_id(booking.id).car.getLabel() }}
               {% endif %}
             </td>
           </tr>
@@ -84,7 +88,7 @@
               <label for="car_id" class="form-label">Car</label>
               <select class="form-select" multiple name="id" id="car_id" required>
                 {% for car in company.cars.get()|sort(attribute="model") %}
-                <option value="{{car.id}}">{{car.model}}</option>
+                <option value="{{car.id}}">{{car.getLabel()}}</option>
                 {% endfor %}
               </select>
             </div>

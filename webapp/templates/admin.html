@@ -12,7 +12,7 @@
         <div class="col-12">
           {% for customer in company.customers.get() %}
           <div class="btn-group mb-1" role="group">
-            <button type="button" class="btn btn-secondary btn-sm "><span class="bi-person-fill"></span> {{customer.name}}</button>
+            <button type="button" class="btn btn-secondary btn-sm "><span class="bi-person-fill"></span> {{customer.getLabel()}}</button>
             <button type="submit" class="btn btn-secondary btn-sm " name="id" value="{{ customer.id }}"  title="Delete Customer"><span class="bi-x"></span></button>
           </div>
           {% endfor %}
@@ -47,7 +47,7 @@
             <div class="col-12">
               {% for car in company.cars.get() %}
               <div class="btn-group mb-1" role="group">
-                <button type="button" class="btn btn-secondary btn-sm"><span class="bi-car-front-fill"></span> {{car.model}}</button>
+                <button type="button" class="btn btn-secondary btn-sm"><span class="bi-car-front-fill"></span> {{car.getLabel()}}</button>
                 <button type="submit" class="btn btn-secondary btn-sm " name="id" value="{{ car.id }}" title="Delete Car"><span class="bi-x"></span></button>
               </div>
               {% endfor %}
