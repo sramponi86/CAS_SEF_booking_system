@@ -3,10 +3,9 @@
   script:
     - pip install coverage
     # allow this to fail in order to generate coverage report
-    - coverage run -m unittest discover --pattern='*tests.py'
+    - coverage run -m unittest discover --pattern='*tests.py' || exit_code=$?
     - coverage report --omit="venv/*","tests/*","webapp/*"
-    # this actually makes the pipeline fail if tests don't pass
-    - python -m unittest discover --pattern="*tests.py"
+    - exit $exit_code
   coverage: '/TOTAL.*\s+(\d+\%)/'
 
 # Use of '@dataclass' requires Python 3.7
