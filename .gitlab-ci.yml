@@ -7,9 +7,6 @@
     - coverage report --omit="venv/*","tests/*","webapp/*"
     # this actually makes the pipeline fail if tests don't pass
     - python -m unittest discover --pattern="*tests.py"
-  parallel:
-    matrix:
-      - version: [weekend-1]
   coverage: '/TOTAL.*\s+(\d+\%)/'
 
 # Use of '@dataclass' requires Python 3.7
