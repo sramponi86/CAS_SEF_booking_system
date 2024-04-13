@@ -22,7 +22,7 @@ class Car:
     Returns:
         str: The human readable label.
     """
-    return f'{self.model} ({self.id})'
+    return f'{self.model}'
 
 class Cars:
   """

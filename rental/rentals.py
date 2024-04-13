@@ -80,7 +80,7 @@ class Rentals:
     for r in rentals_for_car:
       if (max(period_start, period_end) >= min(r.booking.period_start, r.booking.period_end) and 
           min(period_start, period_end) <= max(r.booking.period_start, r.booking.period_end)):
-        raise RentalException(f'Car {car.model} ({ car.id }) cannot be rented for period {period_start} - {period_end}, because it has already been rented.')
+        raise RentalException(f'Car {car.getLabel()} cannot be rented for period {period_start} - {period_end}, because it has already been rented.')
     rental = Rental(controller.nextId(), booking, car)
     assert(rental != None) # Should always hold
     print(f'Adding {rental}')

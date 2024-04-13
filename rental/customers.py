@@ -22,7 +22,7 @@ class Customer:
     Returns:
         str: The human readable label.
     """
-    return f'{self.name} ({self.id})'
+    return f'{self.name}'
   
 class Customers:
   """
