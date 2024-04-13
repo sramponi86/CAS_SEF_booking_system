@@ -1,5 +1,5 @@
-[![Pipeline Status](https://gitlab.inf.ethz.ch/PRV-LECTURERS/courses/se_cas_ais/2024_teams/team_demo/badges/main/pipeline.svg?key_text=Unit+Tests)](https://gitlab.inf.ethz.ch/PRV-LECTURERS/courses/se_cas_ais/2024_teams/team_demo/pipelines)
-[![Pipeline Status](https://gitlab.inf.ethz.ch/PRV-LECTURERS/courses/se_cas_ais/2024_teams/team_demo/badges/main/coverage.svg?key_text=Coverage)](https://gitlab.inf.ethz.ch/PRV-LECTURERS/courses/se_cas_ais/2024_teams/team_demo/pipelines)
+[![Pipeline Status](https://gitlab.inf.ethz.ch/PRV-LECTURERS/courses/se_cas_ais/2024_teams/team05/badges/main/pipeline.svg?key_text=Unit+Tests)](https://gitlab.inf.ethz.ch/PRV-LECTURERS/courses/se_cas_ais/2024_teams/team05/pipelines)
+[![Pipeline Status](https://gitlab.inf.ethz.ch/PRV-LECTURERS/courses/se_cas_ais/2024_teams/team05/badges/main/coverage.svg?key_text=Coverage)](https://gitlab.inf.ethz.ch/PRV-LECTURERS/courses/se_cas_ais/2024_teams/team05/pipelines)
 
 
 # Car Rental Project
