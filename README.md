@@ -2,7 +2,7 @@
 [![Pipeline Status](https://gitlab.inf.ethz.ch/PRV-LECTURERS/courses/se_cas_ais/2024_teams/team05/badges/main/coverage.svg?key_text=Coverage)](https://gitlab.inf.ethz.ch/PRV-LECTURERS/courses/se_cas_ais/2024_teams/team05/pipelines)
 
 
-# Car Rental Project
+# Car Rental Project (Team 5 "Daunting Doves")
 
 
 This will be your team's repository for the Software Engineering Fundamentals course.
