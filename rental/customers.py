@@ -103,8 +103,12 @@ class Customers:
     Returns:
         bool: True if a customer with the given name exists, False otherwise.
     """
+    match = False
+    for client in self.customers:
+      if(client.name == name):
+        match = True
 
-    return False # TODO: Replace by proper implementation
+    return match
 
   def find_by_id(self, id: int):
     """
@@ -121,5 +125,13 @@ class Customers:
     Returns:
         Customer: The Customer instance with the specified ID.
     """
+    retrieved_customer = None
+    for customer in self.customers:
+      if customer.id == id:
+        retrieved_customer = customer
+        break
 
-    return self.customers[0] # TODO: Replace by proper implementation
+    if retrieved_customer == None:
+      raise RentalException(f"Couldn't find customer with id {id}")
+    
+    return retrieved_customer
