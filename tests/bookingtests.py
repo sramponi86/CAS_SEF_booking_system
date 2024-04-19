@@ -32,6 +32,20 @@ class BookingsTests(unittest.TestCase):
     booking = self.bookings.add(self.customer.id, dt.date(2024, 3, 7), dt.date(2024, 4, 7), self.car.id)
     self.assertEqual(booking, self.bookings.bookings[0], "booking not added")
 
+  def test_add_incorrect_period_exception(self):
+    customer = self.customer
+    car = self.car
+
+    with self.assertRaises(RentalException):
+      self.bookings.add(customer.id, dt.date(2000, 11, 11), dt.date(2000, 11, 10), car.id)
+
+  def test_add_nonexisting_car(self):
+    customer = self.customer
+    car = self.cars
+
+    with self.assertRaises(RentalException):
+      self.bookings.add(customer.id, dt.date(2048, 8, 4), dt.date(2048, 8, 16), car.id)
+
   def test_get_empty(self):
     self.assertEqual(self.bookings.get(), [], "bookings not retrieved")
 
