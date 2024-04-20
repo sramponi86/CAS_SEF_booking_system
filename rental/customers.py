@@ -71,6 +71,7 @@ class Customers:
     print(f'Adding {customer}')
     self.customers.append(customer)
     return customer
+   
 
   def delete(self, id: int):
     """

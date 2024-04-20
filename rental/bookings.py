@@ -73,6 +73,8 @@ class Bookings:
     Returns:
         Booking: The newly create Booking instance, added to the list of bookings.
     """
+    if period_start > period_end:
+      raise RentalException(f"End Date is before the start date")
     customer = self.company.customers.find_by_id(customer_id)
     car = self.company.cars.find_by_id(car_id)
     booking = Booking(controller.nextId(), customer, car, period_start, period_end)
