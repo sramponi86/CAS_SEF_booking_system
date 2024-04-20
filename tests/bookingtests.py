@@ -12,7 +12,7 @@ class BookingTests(unittest.TestCase):
 
   def test_constructor(self):
     customer = Customer(1, 'Dandy McDuck')
-    car = Car(1, 'Opel Kadett')
+    car = Car(1, 'Opel Kadett', 'blue')
     booking = Booking(1, customer, car, dt.date(2024, 3, 7), dt.date(2024, 3, 14))
 
     self.assertEqual(booking.id, 1, 'incorrect id after construction')
@@ -24,7 +24,7 @@ class BookingTests(unittest.TestCase):
 class BookingsTests(unittest.TestCase):
   def setUp(self):
     company = Company('Šmertz')
-    self.car = company.cars.add('D12')
+    self.car = company.cars.add('D12', 'blue')
     self.customer = company.customers.add('Dandy McDuck')
     self.bookings = company.bookings
 
@@ -32,6 +32,10 @@ class BookingsTests(unittest.TestCase):
     booking = self.bookings.add(self.customer.id, dt.date(2024, 3, 7), dt.date(2024, 4, 7), self.car.id)
     self.assertEqual(booking, self.bookings.bookings[0], "booking not added")
 
+  def test_add_car_id_with_exception(self):
+    with self.assertRaises(RentalException):
+      self.bookings.add(self.customer.id, dt.date(2024, 3, 7), dt.date(2024, 4, 7), '00')
+      
   def test_add_incorrect_period_exception(self):
     customer = self.customer
     car = self.car
@@ -68,6 +72,13 @@ class BookingsTests(unittest.TestCase):
     booking = self.bookings.add(self.customer.id, dt.date(2024, 3, 7), dt.date(2024, 4, 7), self.car.id)
     self.assertEqual(self.bookings.find_by_id(booking.id), booking, "booking not found by id")
 
+  def test_find_by_multiple_id_exception(self):
+    with self.assertRaises(RentalException):
+      booking = self.bookings.add('90', dt.date(2024, 3, 8), dt.date(2024, 4, 8), self.car.id)
+      self.bookings.add('90', dt.date(2024, 3, 8), dt.date(2024, 4, 8), self.car.id)
+      self.assertEqual(self.bookings.find_by_id('90'), booking, "booking not found by id")
+
+
   def test_find_by_id_exception(self):
     with self.assertRaises(RentalException):
       self.bookings.find_by_id(0)
@@ -76,6 +87,10 @@ class BookingsTests(unittest.TestCase):
     booking1 = self.bookings.add(self.customer.id, dt.date(2024, 3, 7), dt.date(2024, 4, 7), self.car.id)
     booking2 = self.bookings.add(self.customer.id, dt.date(2024, 3, 7), dt.date(2024, 4, 7), self.car.id)
     self.assertCountEqual(self.bookings.find_by_customer_id(self.customer.id), [booking1, booking2], "booking not found by customer id")
+
+  def test_add_car_id_with_false_date_exception(self):
+    with self.assertRaises(Exception):
+      self.bookings.add(self.customer.id, dt.date(2024, 4), dt.date(2024, 4), self.car.id)
 
 if __name__ == '__main__':
   unittest.main()

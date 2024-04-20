@@ -14,6 +14,7 @@ class Car:
   """
   id: int
   model: str
+  color: str
   
   def getLabel(self):
     """
@@ -23,7 +24,10 @@ class Car:
         str: The human readable label.
     """
     return f'{self.model}'
-
+  
+  def getColor(self):
+    return f'{self.color}'
+  
 class Cars:
   """
   Manages a collection (fleet) of cars.
@@ -55,7 +59,7 @@ class Cars:
     """
     return self.cars.copy()
 
-  def add(self, model: str) -> Car:
+  def add(self, model: str, color: str) -> Car:
     """
     Add a new car to the fleet.
 
@@ -68,7 +72,7 @@ class Cars:
     Returns:
         Car: The newly created Car instance.
     """
-    car = Car(controller.nextId(), model)
+    car = Car(controller.nextId(), model, color)
     print(f'Adding {car}')
     self.cars.append(car)
     return car

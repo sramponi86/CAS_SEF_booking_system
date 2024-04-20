@@ -173,6 +173,7 @@ def admin():
       action = request.args.get('action')
       id = request.args.get('id')
       name = request.args.get('name')
+      color = request.args.get('color')
       if action == "add_customer":
         if not company.customers.contains(name):
           company.customers.add(name)
@@ -181,7 +182,7 @@ def admin():
       if action == "delete_customer":
         company.customers.delete(int(id))
       if action == "add_car":
-        company.cars.add(name)
+        company.cars.add(name, color)
       if action == "delete_car":
         company.cars.delete(int(id))
       persist_company()
