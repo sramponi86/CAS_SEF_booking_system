@@ -78,6 +78,9 @@ class Bookings:
     customer = self.company.customers.find_by_id(customer_id)
     car = self.company.cars.find_by_id(car_id)
     booking = Booking(controller.nextId(), customer, car, period_start, period_end)
+    if(period_start > period_end):
+      raise RentalException(f"Start Date cannot be in the past to end date")
+    
     print(f'Adding {booking}')
     self.bookings.append(booking)
     

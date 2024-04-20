@@ -8,9 +8,9 @@ class CompanyTests(unittest.TestCase):
   def setUp(self):
     company = Company('Šmertz')
     
-    company.cars.add('D12')
-    company.cars.add('VW Jetta')
-    company.cars.add('Bon Voyage')
+    company.cars.add('D12', 'blue')
+    company.cars.add('VW Jetta', 'red')
+    company.cars.add('Bon Voyage', 'green')
     
     company.customers.add('Random House')
     company.customers.add('Mega Corp')

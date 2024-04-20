@@ -14,6 +14,7 @@
           <th scope="col">From</th>
           <th scope="col">Until</th>
           <th scope="col"><i class="bi bi-car-front-fill"></i> Booked Car</th>
+          <th scope="col">Car Color</th>
           <th scope="col">Action</th>
           <th scope="col"><i class="bi bi-car-front-fill"></i> Rented Car</th>
         </tr>
@@ -27,6 +28,11 @@
             </td>
             <td>{{booking.period_start}}</td>
             <td>{{booking.period_end}}</td>
+            <td>
+              {% if booking.car %}
+              {{booking.car.getLabel()}}
+              {% endif %}
+            </td>
             <td>
               {% if booking.car %}
               {{booking.car.getLabel()}}
