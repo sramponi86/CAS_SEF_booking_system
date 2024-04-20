@@ -41,10 +41,10 @@ class BookingsTests(unittest.TestCase):
 
   def test_add_nonexisting_car(self):
     customer = self.customer
-    car = self.cars
+    car = self.car
 
     with self.assertRaises(RentalException):
-      self.bookings.add(customer.id, dt.date(2048, 8, 4), dt.date(2048, 8, 16), car.id)
+      self.bookings.add(customer.id, dt.date(2048, 8, 4), dt.date(2048, 8, 16), "888")
 
   def test_get_empty(self):
     self.assertEqual(self.bookings.get(), [], "bookings not retrieved")
