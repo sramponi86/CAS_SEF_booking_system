@@ -11,6 +11,7 @@ class Car:
   Attributes:
       id (int): ID of the car.
       model (str): The model name of the car.
+      color (str): Color of the car
   """
   id: int
   model: str
