@@ -16,6 +16,7 @@
           <th scope="col"><i class="bi bi-car-front-fill"></i> Booked Car</th>
           <th scope="col">Car Color</th>
           <th scope="col">Action</th>
+          <th scope="col">Upgrade</th>
           <th scope="col"><i class="bi bi-car-front-fill"></i> Rented Car</th>
         </tr>
       </thead>
@@ -40,9 +41,22 @@
             </td>
             <td>
               {% if company.rentals.find_by_booking_id(booking.id) == None %}
-              <button type="submit" class="btn btn-success btn-sm " name="action" value="add_rental" title="Rent Car"><span class="bi-car-front-fill"></span> Rent</button>
+                {% if booking.car.getColor() == "gold" and company.customers.get_points(session['customer_id']) < 650 %}
+                <button type="submit" disabled class="btn btn-success btn-sm " name="action" value="add_rental" title="Rent Car"><span class="bi-car-front-fill"></span> Rent </button>
+                {% elif booking.car.getColor() == "platinum" and company.customers.get_points(session['customer_id']) < 3000 %}
+                <button type="submit" disabled class="btn btn-success btn-sm " name="action" value="add_rental" title="Rent Car"><span class="bi-car-front-fill"></span> Rent </button>
+                {% else %}
+                <button type="submit" class="btn btn-success btn-sm " name="action" value="add_rental" title="Rent Car"><span class="bi-car-front-fill"></span> Rent </button>
+                {% endif %}
               {% else %}
               <button type="submit" class="btn btn-danger btn-sm " name="action" value="delete_rental" title="Give Car Back"><span class="bi-car-front-fill"></span> Return</button>
+              {% endif %}
+            </td>
+            <td>
+              {% if company.rentals.find_by_booking_id(booking.id) != None and company.customers.get_points(session['customer_id']) > 500 %}
+              <button type="submit" class="btn btn-success btn-sm " name="action" value="add_rental_with_upgrade" title="Rent Car with Upgrades"><span class="bi-car-front-fill"></span> Upgrade </button>
+              {% else %}
+              <button type="submit" disabled ="btn btn-success btn-sm " name="action" value="add_rental_with_upgrade" title="Rent Car with Upgrades"><span class="bi-car-front-fill"></span> Upgrade </button>
               {% endif %}
             </td>
             <td>

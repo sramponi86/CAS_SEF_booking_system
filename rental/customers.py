@@ -14,6 +14,8 @@ class Customer:
   """
   id: int
   name: str
+  points: int = 0
+  status: str = "Basic"
     
   def getLabel(self):
     """
@@ -136,3 +138,57 @@ class Customers:
       raise RentalException(f"Couldn't find customer with id {id}")
     
     return retrieved_customer
+
+  def add_points(self, id: int, points: int):
+    if points < 0:
+      raise RentalException(f"Points cannot be negative")
+    
+    customer = self.find_by_id(id)
+    customer.points += points
+    self.update_status(id)
+
+  def subtract_points(self, id: int, points: int):
+    if points < 0:
+      raise RentalException(f"Points cannot be negative")
+    
+    customer = self.find_by_id(id)
+    if customer.points-points < 0:
+      customer.points = 0
+    else:
+      customer.points -= points
+
+    self.update_status(id)
+
+  def get_points(self, id: int):
+    customer = self.find_by_id(id)
+
+    return customer.points
+
+  def get_status(self, id: int):
+    customer = self.find_by_id(id)
+    
+    return customer.status
+  
+  def update_status(self, id: int):
+    customer = self.find_by_id(id)
+    current_points = self.get_points(id)
+    if (current_points <= 100):
+      if(customer.status != "Basic"):
+        customer.status = "Basic"
+        raise RentalException(f"You reached the Basic status")
+    elif (current_points > 100) & (current_points <= 200):
+      if(customer.status != "Newbie"):
+        customer.status = "Newbie"
+        raise RentalException(f"You reached the Newbie status")
+    elif (current_points > 200) & (current_points <= 500):
+      if(customer.status != "Expert"):
+        customer.status = "Expert"
+        raise RentalException(f"You reached the Expert status")
+    elif (current_points > 500) & (current_points <= 800):
+      if(customer.status != "Professional"):
+        customer.status = "Professional"
+        raise RentalException(f"You reached the Professional status")
+    elif (current_points > 800):
+      if(customer.status != "Serial Renter"):
+        customer.status = "Serial Renter"
+        raise RentalException(f"You reached the Serial Renter status")

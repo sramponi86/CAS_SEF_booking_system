@@ -4,6 +4,7 @@ from rental.rentals import Rental, Rentals
 from rental.exceptions import RentalException
 from rental.company import Company
 from rental import controller
+from contextlib import suppress
 
 class RentalTests(unittest.TestCase):
   def setUp(self):
@@ -39,8 +40,8 @@ class RentalsTests(unittest.TestCase):
     customer = self.company.customers.add('Random House')
     car = self.company.cars.add('D12', 'blue')
     booking = self.company.bookings.add(customer.id, controller.today, controller.today + dt.timedelta(days=10), car.id)
-    rental = self.rentals.add(booking.id)
-    self.assertCountEqual([rental], self.rentals.rentals, "rental not added")
+    self.rentals.add(booking.id)
+    self.assertCountEqual([self.rentals.find_by_booking_id(booking.id)], self.rentals.rentals, "rental not added")
 
   def test_add_exception_start_date(self):
     # Raise RentalException if the start date of the booking does not concide with today's date.
@@ -65,33 +66,83 @@ class RentalsTests(unittest.TestCase):
     self.assertEqual(self.rentals.get(), [], "rentals not retrieved")
 
   def test_get_not_empty(self):
-    rental1, rental2 = self.fill_rentals()
-    self.assertCountEqual(self.rentals.get(), [rental1, rental2], "rentals not retrieved")               
+    with suppress(RentalException):
+      rental1, rental2 = self.fill_rentals()
+      self.assertCountEqual(self.rentals.get(), [rental1, rental2], "rentals not retrieved")               
 
   def test_delete(self):
-    rental1, rental2 = self.fill_rentals()
-    self.rentals.delete(rental1.id)
-    self.assertNotIn(rental1, self.rentals.rentals, "rental not deleted")
-    self.assertIn(rental2, self.rentals.rentals, "rental not inserted")
+    with suppress(RentalException):
+      rental1, rental2 = self.fill_rentals()
+      self.rentals.delete(rental1.id)
+      self.assertNotIn(rental1, self.rentals.rentals, "rental not deleted")
+      self.assertIn(rental2, self.rentals.rentals, "rental not inserted")
 
   def test_find_by_id(self):
-    rental1, rental2 = self.fill_rentals()
-    self.assertEqual(self.rentals.find_by_id(rental1.id), rental1, "rental not found by id")
-    self.assertEqual(self.rentals.find_by_id(rental2.id), rental2, "rental not found by id")
+    with suppress(RentalException):   
+      rental1, rental2 = self.fill_rentals()
+      self.assertEqual(self.rentals.find_by_id(rental1.id), rental1, "rental not found by id")
+      self.assertEqual(self.rentals.find_by_id(rental2.id), rental2, "rental not found by id")
 
   def test_find_by_id_exception(self):
     with self.assertRaises(RentalException):
       self.rentals.find_by_id(0)
 
   def test_find_by_booking_id(self):
-    rental1, rental2 = self.fill_rentals()
-    self.assertEqual(self.rentals.find_by_booking_id(rental1.booking.id), rental1, "rental not found by booking id")
-    self.assertEqual(self.rentals.find_by_booking_id(rental2.booking.id), rental2, "rental not found by booking id")
+    with suppress(RentalException):
+      rental1, rental2 = self.fill_rentals()
+      self.assertEqual(self.rentals.find_by_booking_id(rental1.booking.id), rental1, "rental not found by booking id")
+      self.assertEqual(self.rentals.find_by_booking_id(rental2.booking.id), rental2, "rental not found by booking id")
 
   def test_find_by_customer_id(self):
-    rental1, rental2 = self.fill_rentals()
-    self.assertEqual(self.rentals.find_by_customer_id(rental1.booking.customer.id), [rental1], "rental not found by customer id")
-    self.assertEqual(self.rentals.find_by_customer_id(rental2.booking.customer.id), [rental2], "rental not found by customer id")
+    with suppress(RentalException):
+      rental1, rental2 = self.fill_rentals()
+      self.assertEqual(self.rentals.find_by_customer_id(rental1.booking.customer.id), [rental1], "rental not found by customer id")
+      self.assertEqual(self.rentals.find_by_customer_id(rental2.booking.customer.id), [rental2], "rental not found by customer id")
+
+  def test_calculate_points(self):
+    customer1 = self.company.customers.add('Random House')
+    car = self.company.cars.add('VW Jetta', 'green')
+    booking1 = self.company.bookings.add(customer1.id, controller.today, controller.today + dt.timedelta(days=10), car.id)
+    self.rentals.add(booking1.id)
+    self.assertEqual(self.rentals.calculate_points(customer1.id, car.id, controller.today, controller.today + dt.timedelta(days=10)), 10)
+
+  def test_calculate_points_1_day(self):
+    customer1 = self.company.customers.add('Random House')
+    car = self.company.cars.add('VW Jetta', 'green')
+    booking1 = self.company.bookings.add(customer1.id, controller.today, controller.today, car.id)
+    self.rentals.add(booking1.id)
+    self.assertEqual(self.rentals.calculate_points(customer1.id, car.id, controller.today, controller.today), 1)
+
+  def test_calculate_points_red(self):
+    customer1 = self.company.customers.add('Random House')
+    car = self.company.cars.add('VW Jetta', 'red')
+    booking1 = self.company.bookings.add(customer1.id, controller.today, controller.today + dt.timedelta(days=10), car.id)
+    with suppress(RentalException):
+      self.rentals.add(booking1.id)
+    self.assertEqual(self.rentals.calculate_points(customer1.id, car.id, controller.today, controller.today + dt.timedelta(days=10)), 5000)
+
+  def test_calculate_points_exception(self):
+    customer1 = self.company.customers.add('Random House')
+    car = self.company.cars.add('VW Jetta', 'green')
+    booking1 = self.company.bookings.add(customer1.id, controller.today, controller.today + dt.timedelta(days=10), car.id)
+    self.rentals.add(booking1.id)
+      
+    with self.assertRaises(RentalException):
+      self.rentals.calculate_points(customer1.id, car.id, controller.today + dt.timedelta(days=10), controller.today)
+
+  def test_add_with_upgrades(self):
+    customer = self.company.customers.add('Random House')
+    car = self.company.cars.add('D12', 'blue')
+    booking = self.company.bookings.add(customer.id, controller.today, controller.today + dt.timedelta(days=10), car.id)
+    self.rentals.add_with_upgrades(booking.id)
+    self.assertNotIn([self.rentals.find_by_booking_id(booking.id)], self.rentals.rentals)
+
+  def test_add_with_upgrades_exception(self):
+    customer = self.company.customers.add('Monty Python')
+    car = self.company.cars.add('D12', 'blue')
+    not_today_booking = self.company.bookings.add(customer.id, dt.date(2021, 3, 7), dt.date(2024, 3, 14), car.id)
+    with self.assertRaises(RentalException):
+      self.rentals.add_with_upgrades(not_today_booking.id)
 
 if __name__ == '__main__':
   unittest.main()

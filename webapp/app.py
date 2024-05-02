@@ -100,6 +100,9 @@ def customer():
           company.bookings.delete(int(id))
         if action == "add_rental":
           company.rentals.add(int(id))
+        if action == "add_rental_with_upgrade":
+          company.rentals.add_with_upgrades(int(id))
+          raise RentalException(f'You have been upgrade!!')
         if action == "delete_rental":
           rental = company.rentals.find_by_booking_id(int(id))
           company.rentals.delete(rental.id)
@@ -121,6 +124,10 @@ def book():
 @app.route('/rent')
 def rent():
   return render_template('rent.html')
+
+@app.route('/points')
+def points():
+ return render_template('points.html')
 
 @app.route('/logout')
 def logout():

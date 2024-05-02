@@ -2,6 +2,7 @@ import unittest
 from rental.company import Company
 from rental.customers import Customer, Customers
 from rental.exceptions import RentalException
+from contextlib import suppress
 
 class CustomerTests(unittest.TestCase):
   def setUp(self):
@@ -64,6 +65,78 @@ class CustomersTests(unittest.TestCase):
     with self.assertRaises(RentalException):
       self.customers.find_by_id(telsa.id + 100)
 
+  def test_default_points(self):
+    test = self.customers.add('Test Customer')
+    self.assertEqual(self.customers.get_points(test.id), 0)
+
+  def test_add_points(self):
+    test = self.customers.add('Test Customer')
+    self.customers.add_points(test.id, 10)
+    self.assertEqual(self.customers.get_points(test.id), 10)
+
+  def test_negative_points(self):
+    test = self.customers.add('Test Customer')
+
+    with self.assertRaises(RentalException):
+      self.customers.add_points(test.id, -10)
+
+  def test_add_string_as_points(self):
+    test = self.customers.add('Test Customer')
+
+    with self.assertRaises(Exception):
+      self.customers.add_points(test.id, "test")
+
+  def test_add_points_incorrect_id(self):
+    self.customers.add('Test Customer')
+
+    with self.assertRaises(RentalException):
+      self.customers.add_points("testid", 10)
+
+  def test_get_points_incorrect_id(self):
+    with self.assertRaises(RentalException):
+      self.customers.get_points("testid")
+
+  def test_get_status(self):
+    test = self.customers.add('Test Customer')
+    self.assertEqual(self.customers.get_status(test.id), "Basic")
+
+  def test_get_status_incorrect_id(self):
+    with self.assertRaises(RentalException):
+      self.customers.get_status("testid")
+
+  def test_update_status(self):
+    test = self.customers.add('Test Customer')
+    with self.assertRaisesRegex(RentalException, "You reached the Newbie status"):
+      self.customers.add_points(test.id, 200)
+
+  def test_update_status_expert(self):
+    test = self.customers.add('Test Customer')
+    with self.assertRaisesRegex(RentalException, "You reached the Expert status"):
+      self.customers.add_points(test.id, 300)
+
+  def test_update_status_prof(self):
+    test = self.customers.add('Test Customer')
+    with self.assertRaisesRegex(RentalException, "You reached the Professional status"):
+      self.customers.add_points(test.id, 501)
+
+  def test_update_status_serial(self):
+    test = self.customers.add('Test Customer')
+    with self.assertRaisesRegex(RentalException, "You reached the Serial Renter status"):
+      self.customers.add_points(test.id, 1000)
+
+  def test_subtract(self):
+    test = self.customers.add('Test Customer')
+    with suppress(RentalException):
+      self.customers.add_points(test.id, 1000)
+    with self.assertRaisesRegex(RentalException, "You reached the Basic status"):
+      self.customers.subtract_points(test.id, 1000)
+
+  def test_subtract_negative(self):
+    test = self.customers.add('Test Customer')
+    with suppress(RentalException):
+      self.customers.add_points(test.id, 1000)
+    with self.assertRaisesRegex(RentalException, "You reached the Basic status"):
+      self.customers.subtract_points(test.id, 1001)
 
 if __name__ == '__main__':
   unittest.main()

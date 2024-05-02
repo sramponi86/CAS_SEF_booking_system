@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block title %} Reward Points {% endblock %}
+
+{% block content %}
+<head>
+    <!-- Font Awesome Icon Library -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style>
+    .checked {
+      color: orange;
+    }
+    .badge {
+    background-color: red;
+    color: white;
+    padding: 4px 8px;
+    text-align: center;
+    border-radius: 5px;
+    }
+    </style>
+</head>
+<body>
+    <h1>Reward point for user {{ session['customer_name'] }} <span class="badge">New</span></h1>
+    <div>
+        <span class="fa fa-star checked"></span>
+        <span class="fa fa-star checked"></span>
+        <span class="fa fa-star checked"></span>
+        <span class="fa fa-star"></span>
+        <span class="fa fa-star"></span>
+    </div>
+    <h3>Points {{company.customers.get_points(session['customer_id'])}} and Status {{company.customers.get_status(session['customer_id'])}}</h3>
+</body>
+{% endblock %}

@@ -4,6 +4,7 @@ from rental.exceptions import RentalException
 from rental.company import Company
 from rental.cars import Car
 from rental.bookings import Booking
+from datetime import date
 
 @dataclass
 class Rental:
@@ -85,7 +86,33 @@ class Rentals:
     assert(rental != None) # Should always hold
     print(f'Adding {rental}')
     self.rentals.append(rental)
+    new_points = self.calculate_points(booking.customer.id, car.id, period_start, period_end)
+    print(f'Points {new_points}')
+    self.company.customers.add_points(booking.customer.id, new_points)
     return rental
+  
+  def add_with_upgrades(self, booking_id: int):
+    booking = self.company.bookings.find_by_id(booking_id)
+    period_start = booking.period_start
+    period_end = booking.period_end
+    rental = None
+
+    if controller.today != period_start:
+      raise RentalException(f'A car can only be picked up on the start-date of the booking ({period_start}). But today is {controller.today}')
+    
+    car = self.company.cars.add("special_upgrade2", "silver")
+
+    new_booking = self.company.bookings.add(booking.customer.id, period_start, period_end, car.id)
+    rental = Rental(controller.nextId(), new_booking, car)
+    assert(rental != None) # Should always hold
+    print(f'Adding {rental}')
+    self.rentals.append(rental)
+    new_points = self.calculate_points(booking.customer.id, car.id, period_start, period_end)
+    print(f'Points {new_points}')
+    self.company.customers.subtract_points(booking.customer.id, new_points)
+    self.company.bookings.delete(booking.id)
+    return rental
+  
   
   def delete(self, id: int):
     """
@@ -143,6 +170,38 @@ class Rentals:
     if rentals == []:
       return None
     return rentals[0]
+  
+  def calculate_points(self, id: int, car_id: int, period_start: date, period_end: date):
+    points = 0
+    multiplier_exp = 0
+    multiplier_color = 1
+    current_status = self.company.customers.get_status(id)
+
+    if self.company.cars.find_by_id(car_id).color == "red":
+      multiplier_color = 100
+
+    if period_start > period_end:
+      raise RentalException(f"End Date is before the start date")
+    else:
+      if current_status == "Basic":
+          multiplier_exp = 1
+      elif current_status == "Newbie":
+          multiplier_exp = 1
+      elif current_status == "Expert":
+          multiplier_exp = 2
+      elif current_status == "Professional":
+          multiplier_exp = 3
+      elif current_status == "Serial Renter":
+          multiplier_exp = 5
+
+      if((period_end - period_start).days == 0):
+        days = 1
+      else:
+        days = (period_end - period_start).days
+
+      points = (days*multiplier_exp)*multiplier_color
+
+    return points
 
   def find_by_customer_id(self, customer_id: int):
     """
