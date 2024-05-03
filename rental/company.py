@@ -20,9 +20,11 @@ class Company:
     """
 
     # Lazy import to avoid circular imports
-    from rental import customers, cars, bookings, rentals
+    from rental import customers, cars, bookings, rentals, statistics
     self.name = name
     self.customers = customers.Customers(self)
     self.cars = cars.Cars(self)
     self.bookings = bookings.Bookings(self)
     self.rentals = rentals.Rentals(self)
+  
+    statistics.attachTo(self)

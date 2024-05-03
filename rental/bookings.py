@@ -1,4 +1,5 @@
 from dataclasses import dataclass, field
+from patterns.observer import Subject
 from rental import controller
 from rental.exceptions import RentalException
 from rental.company import Company
@@ -24,7 +25,7 @@ class Booking:
   period_start: date = field(repr=False)
   period_end: date = field(repr=False)
 
-class Bookings:
+class Bookings(Subject):
   """
   Manages a collection of bookings.
 
@@ -41,6 +42,7 @@ class Bookings:
     Args:
         company (Company): The rental company associated with the bookings.
     """
+    super().__init__()
     self.bookings: list[Booking] = []
     self.company = company
 
@@ -83,7 +85,8 @@ class Bookings:
     
     print(f'Adding {booking}')
     self.bookings.append(booking)
-    
+    self.notify()
+
     return booking
 
   def delete(self, id: int):
@@ -106,6 +109,7 @@ class Bookings:
         
     print(f'Deleting {booking}')
     self.bookings.remove(booking)
+    self.notify()
 
   def find_by_id(self, id: int):
     """
