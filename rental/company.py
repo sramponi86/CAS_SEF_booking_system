@@ -26,5 +26,5 @@ class Company:
     self.cars = cars.Cars(self)
     self.bookings = bookings.Bookings(self)
     self.rentals = rentals.Rentals(self)
-
+  
     statistics.attachTo(self)
