@@ -42,6 +42,7 @@ class Bookings(Subject):
     Args:
         company (Company): The rental company associated with the bookings.
     """
+    super.__init__()
     self.bookings: list[Booking] = []
     self.company = company
 
