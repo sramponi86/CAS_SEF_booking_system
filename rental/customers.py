@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from patterns.observer import Subject
 from rental import controller
 from rental.exceptions import RentalException
 from rental.company import Company
@@ -26,7 +27,7 @@ class Customer:
     """
     return f'{self.name}'
   
-class Customers:
+class Customers(Subject):
   """
   Manages a collection of customers.
 
@@ -43,6 +44,7 @@ class Customers:
     Args:
         company (Company): The rental company associated with the customers.
     """
+    super().__init__()
     self.customers: list[Customer] = []
     self.company = company
 
@@ -72,6 +74,7 @@ class Customers:
     customer = Customer(controller.nextId(), name)
     print(f'Adding {customer}')
     self.customers.append(customer)
+    self.notify()
     return customer
    
 
@@ -95,6 +98,7 @@ class Customers:
     
     print(f'Deleting {customer}')
     self.customers.remove(customer)
+    self.notify()
 
   def contains(self, name: str):
     """
@@ -146,6 +150,7 @@ class Customers:
     customer = self.find_by_id(id)
     customer.points += points
     self.update_status(id)
+    self.notify()
 
   def subtract_points(self, id: int, points: int):
     if points < 0:
@@ -158,6 +163,7 @@ class Customers:
       customer.points -= points
 
     self.update_status(id)
+    self.notify()
 
   def get_points(self, id: int):
     customer = self.find_by_id(id)
@@ -192,3 +198,5 @@ class Customers:
       if(customer.status != "Serial Renter"):
         customer.status = "Serial Renter"
         raise RentalException(f"You reached the Serial Renter status")
+      
+    self.notify()

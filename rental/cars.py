@@ -1,4 +1,5 @@
 from dataclasses import dataclass, field
+from patterns.observer import Subject
 from rental import controller
 from rental.exceptions import RentalException
 from rental.company import Company
@@ -29,7 +30,7 @@ class Car:
   def getColor(self):
     return f'{self.color}'
   
-class Cars:
+class Cars(Subject):
   """
   Manages a collection (fleet) of cars.
 
@@ -46,6 +47,7 @@ class Cars:
     Args:
         company (Company): The rental company associated with the fleet of cars.
     """
+    super().__init__()
     self.cars: list[Car] = []
     self.company = company
 
@@ -76,6 +78,7 @@ class Cars:
     car = Car(controller.nextId(), model, color)
     print(f'Adding {car}')
     self.cars.append(car)
+    self.notify()
     return car
 
   def delete(self, id: int):
@@ -95,6 +98,7 @@ class Cars:
         
     print(f'Deleting {car}')
     self.cars.remove(car)
+    self.notify()
 
   def find_by_id(self, id: int):
     """
