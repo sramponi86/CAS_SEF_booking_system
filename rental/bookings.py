@@ -85,7 +85,8 @@ class Bookings(Subject):
     
     print(f'Adding {booking}')
     self.bookings.append(booking)
-    
+    self.notify()
+
     return booking
 
   def delete(self, id: int):
@@ -108,6 +109,7 @@ class Bookings(Subject):
         
     print(f'Deleting {booking}')
     self.bookings.remove(booking)
+    self.notify()
 
   def find_by_id(self, id: int):
     """
