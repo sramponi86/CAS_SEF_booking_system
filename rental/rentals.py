@@ -1,4 +1,5 @@
 from dataclasses import dataclass, field
+from patterns.observer import Subject
 from rental import controller
 from rental.exceptions import RentalException
 from rental.company import Company
@@ -20,7 +21,7 @@ class Rental:
   booking: Booking = field(repr=False)
   car: Car
 
-class Rentals:
+class Rentals(Subject):
   """
   Manages a collection of rentals.
 
@@ -37,6 +38,7 @@ class Rentals:
     Args:
         company (Company): The rental company associated with the rentals.
     """
+    super().__init__()
     self.rentals: list[Rental] = []
     self.company = company
 
@@ -89,6 +91,7 @@ class Rentals:
     new_points = self.calculate_points(booking.customer.id, car.id, period_start, period_end)
     print(f'Points {new_points}')
     self.company.customers.add_points(booking.customer.id, new_points)
+    self.notify()
     return rental
   
   def add_with_upgrades(self, booking_id: int):
@@ -111,6 +114,7 @@ class Rentals:
     print(f'Points {new_points}')
     self.company.customers.subtract_points(booking.customer.id, new_points)
     self.company.bookings.delete(booking.id)
+    self.notify()
     return rental
   
   
@@ -127,6 +131,7 @@ class Rentals:
     rental = self.find_by_id(id)
     print(f'Deleting {rental}')
     self.rentals.remove(rental)
+    self.notify()
 
   def find_by_id(self, id: int):
     """
