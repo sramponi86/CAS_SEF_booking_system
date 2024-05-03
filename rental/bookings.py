@@ -1,4 +1,5 @@
 from dataclasses import dataclass, field
+from patterns.observer import Subject
 from rental import controller
 from rental.exceptions import RentalException
 from rental.company import Company
@@ -24,7 +25,7 @@ class Booking:
   period_start: date = field(repr=False)
   period_end: date = field(repr=False)
 
-class Bookings:
+class Bookings(Subject):
   """
   Manages a collection of bookings.
 
