@@ -17,6 +17,13 @@ class CustomerStats(Observer):
   def update(self, k: Customers) -> None:
     print(f'*** STATISTICS ***: Number of Customers: {len(k.customers)}')
 
+class CustomerPointsStats(Observer):
+  def update(self, k: Customers) -> None:
+    sum = 0
+    for client in k.customers:
+      sum += k.get_points(client.id)
+    print(f'*** STATISTICS ***: Customer average points: {sum/len(k.customers)}')
+
 class RentalStats(Observer):
   def update(self, r: Rentals) -> None:
     print(f'*** STATISTICS ***: Number of Rentals: {len(r.rentals)}')
@@ -25,5 +32,6 @@ def attachTo(company: Company):
   company.bookings.attach(BookingStats())
   company.cars.attach(CarStats())
   company.customers.attach(CustomerStats())
+  company.customers.attach(CustomerPointsStats())
   company.rentals.attach(RentalStats())
   # TODO Register more observer classes here ...

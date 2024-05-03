@@ -29,6 +29,10 @@ class Subject:
     for observer in self.observers:  
         observer.update(self)
 
+  def notify_points(self) -> None:
+    for observer in self.observers:  
+        observer.update(self)
+
 class Observer(ABC): 
   """
   The Observer interface declares the update method, called by subjects.
