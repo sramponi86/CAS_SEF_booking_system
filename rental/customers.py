@@ -150,7 +150,7 @@ class Customers(Subject):
     customer = self.find_by_id(id)
     customer.points += points
     self.update_status(id)
-    self.notify()
+    self.notify_points()
 
   def subtract_points(self, id: int, points: int):
     if points < 0:
@@ -163,11 +163,10 @@ class Customers(Subject):
       customer.points -= points
 
     self.update_status(id)
-    self.notify()
+    self.notify_points()
 
   def get_points(self, id: int):
     customer = self.find_by_id(id)
-
     return customer.points
 
   def get_status(self, id: int):
@@ -199,4 +198,4 @@ class Customers(Subject):
         customer.status = "Serial Renter"
         raise RentalException(f"You reached the Serial Renter status")
       
-    self.notify()
+    self.notify_points()
