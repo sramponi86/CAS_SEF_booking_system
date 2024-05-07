@@ -5,6 +5,7 @@ from rental.bookings import Booking, Bookings
 from rental.exceptions import RentalException
 from rental.customers import Customer
 from rental.cars import Car
+from rental.categories import Categories
 
 class BookingTests(unittest.TestCase):
   def setUp(self):
@@ -12,8 +13,8 @@ class BookingTests(unittest.TestCase):
 
   def test_constructor(self):
     customer = Customer(1, 'Dandy McDuck')
-    car = Car(1, 'Opel Kadett', 'blue')
-    booking = Booking(1, customer, car, dt.date(2024, 3, 7), dt.date(2024, 3, 14))
+    car = Car(1, 'Opel Kadett', 'blue', "A")
+    booking = Booking(1, customer, car, dt.date(2024, 3, 7), dt.date(2024, 3, 14), "A")
 
     self.assertEqual(booking.id, 1, 'incorrect id after construction')
     self.assertEqual(booking.customer, customer, 'incorrect customer after construction')
@@ -24,7 +25,8 @@ class BookingTests(unittest.TestCase):
 class BookingsTests(unittest.TestCase):
   def setUp(self):
     company = Company('Šmertz')
-    self.car = company.cars.add('D12', 'blue')
+    category = Categories(company)
+    self.car = company.cars.add('D12', 'blue', category)
     self.customer = company.customers.add('Dandy McDuck')
     self.bookings = company.bookings
 
@@ -60,7 +62,7 @@ class BookingsTests(unittest.TestCase):
 
   def test_get_copy(self):
     bookings = self.bookings.get()
-    bookings.append(Booking(1, self.customer, self.car, dt.date(2024, 3, 7), dt.date(2024, 4, 7)))
+    bookings.append(Booking(1, self.customer, self.car, dt.date(2024, 3, 7), dt.date(2024, 4, 7), "A"))
     self.assertEqual(len(self.bookings.get()), 0, "bookings not retrieved")
 
   def test_delete(self):

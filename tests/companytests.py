@@ -3,15 +3,16 @@ import datetime as dt
 from rental.company import Company
 from rental.exceptions import RentalException
 from rental import controller
+from rental.categories import Categories
 from contextlib import suppress
 
 class CompanyTests(unittest.TestCase):
   def setUp(self):
     company = Company('Šmertz')
-    
-    company.cars.add('D12', 'blue')
-    company.cars.add('VW Jetta', 'red')
-    company.cars.add('Bon Voyage', 'green')
+    category = Categories(company)
+    company.cars.add('D12', 'blue', category)
+    company.cars.add('VW Jetta', 'red', category)
+    company.cars.add('Bon Voyage', 'green', category)
     
     company.customers.add('Random House')
     company.customers.add('Mega Corp')
