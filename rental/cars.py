@@ -17,6 +17,7 @@ class Car:
   id: int
   model: str
   color: str
+  category: str
   
   def getLabel(self):
     """
@@ -62,7 +63,7 @@ class Cars(Subject):
     """
     return self.cars.copy()
 
-  def add(self, model: str, color: str) -> Car:
+  def add(self, model: str, color: str, category: str) -> Car:
     """
     Add a new car to the fleet.
 
@@ -75,7 +76,7 @@ class Cars(Subject):
     Returns:
         Car: The newly created Car instance.
     """
-    car = Car(controller.nextId(), model, color)
+    car = Car(controller.nextId(), model, color, category)
     print(f'Adding {car}')
     self.cars.append(car)
     self.notify()
@@ -99,6 +100,13 @@ class Cars(Subject):
     print(f'Deleting {car}')
     self.cars.remove(car)
     self.notify()
+
+  def find_by_category_id(self, category_id: int):
+    cars: list[Car] = []
+    for c in self.cars:
+      if c.category == category_id:
+        cars.append(c)
+    return cars
 
   def find_by_id(self, id: int):
     """
