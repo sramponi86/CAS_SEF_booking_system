@@ -92,6 +92,10 @@ def customer():
       id = request.args.get('id')
       if (customer_id):
         action = request.args.get('action')
+        if action == "add_category_booking":
+          period_start = date.fromisoformat(request.args.get('period_start'))
+          period_end = date.fromisoformat(request.args.get('period_end'))
+          company.bookings.add(int(customer_id),period_start, period_end, category_id=int(id))
         if action == "add_car_booking":
           period_start = date.fromisoformat(request.args.get('period_start'))
           period_end = date.fromisoformat(request.args.get('period_end'))
@@ -188,8 +192,16 @@ def admin():
           flash(f'A customer with name "{name}" exists already', 'warning')
       if action == "delete_customer":
         company.customers.delete(int(id))
+      if action == "add_category":
+        if not company.categories.contains(name):
+          company.categories.add(name)
+        else:
+          flash(f'A category with name "{name}" exists already', 'warning')
+      if action == "delete_category":
+        company.categories.delete(int(id))
       if action == "add_car":
-        company.cars.add(name, color)
+        category_id = int(request.args.get('category_id'))
+        company.cars.add(name, color, category_id)
       if action == "delete_car":
         company.cars.delete(int(id))
       persist_company()
