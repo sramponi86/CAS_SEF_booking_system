@@ -95,7 +95,7 @@ def customer():
         if action == "add_category_booking":
           period_start = date.fromisoformat(request.args.get('period_start'))
           period_end = date.fromisoformat(request.args.get('period_end'))
-          company.bookings.add(int(customer_id),period_start, period_end, category_id=int(id))
+          company.bookings.add_by_category_id(int(customer_id),period_start, period_end, category_id=int(id))
         if action == "add_car_booking":
           period_start = date.fromisoformat(request.args.get('period_start'))
           period_end = date.fromisoformat(request.args.get('period_end'))
@@ -145,6 +145,7 @@ def login():
     if set_customer:
       session['customer_id'] = int(set_customer)
       session['customer_name'] = company.customers.find_by_id(int(set_customer)).getLabel()
+
   update_request_number()
   if session.get('customer_id'):
     return redirect(url_for('customer'))

@@ -103,12 +103,9 @@ class Cars(Subject):
 
   def find_by_category_id(self, category_id: int):
     cars: list[Car] = []
-    category_name = self.company.categories.find_by_id(category_id).name
     for c in self.cars:
-      if c.category == category_name:
+      if c.category == category_id:
         cars.append(c)
-    if cars == []:
-      raise RentalException(f"Couldn't find cars with id {category_id}")
     return cars
 
   def find_by_id(self, id: int):

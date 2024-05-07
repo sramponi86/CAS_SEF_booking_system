@@ -5,6 +5,7 @@ from rental.exceptions import RentalException
 from rental.company import Company
 from rental.cars import Car
 from rental.bookings import Booking
+from rental.categories import Categories
 from datetime import date
 
 @dataclass
@@ -103,7 +104,7 @@ class Rentals(Subject):
     if controller.today != period_start:
       raise RentalException(f'A car can only be picked up on the start-date of the booking ({period_start}). But today is {controller.today}')
     
-    car = self.company.cars.add("special_upgrade2", "silver")
+    car = self.company.cars.add("special_upgrade2", "silver", "FF")
 
     new_booking = self.company.bookings.add(booking.customer.id, period_start, period_end, car.id)
     rental = Rental(controller.nextId(), new_booking, car)

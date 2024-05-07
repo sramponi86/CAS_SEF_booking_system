@@ -24,6 +24,7 @@ class Booking:
   car: Car
   period_start: date = field(repr=False)
   period_end: date = field(repr=False)
+  category: str
 
 class Bookings(Subject):
   """
@@ -58,6 +59,21 @@ class Bookings(Subject):
     """
     return self.bookings.copy()
 
+  def add_by_category_id(self, customer_id: int, period_start: date, period_end: date, category_id: int) -> Booking:
+    if period_start > period_end:
+      raise RentalException(f"End Date is before the start date")
+    customer = self.company.customers.find_by_id(customer_id)
+    car = self.company.cars.find_by_category_id(category_id)
+    booking = Booking(controller.nextId(), customer, car[0], period_start, period_end, category_id)
+    if(period_start > period_end):
+      raise RentalException(f"Start Date cannot be in the past to end date")
+    
+    print(f'Adding {booking}')
+    self.bookings.append(booking)
+    self.notify()
+
+    return booking
+
   def add(self, customer_id: int, period_start: date, period_end: date, car_id: int) -> Booking:
     """
     Create a booking and add it to the collection.
@@ -79,7 +95,7 @@ class Bookings(Subject):
       raise RentalException(f"End Date is before the start date")
     customer = self.company.customers.find_by_id(customer_id)
     car = self.company.cars.find_by_id(car_id)
-    booking = Booking(controller.nextId(), customer, car, period_start, period_end)
+    booking = Booking(controller.nextId(), customer, car, period_start, period_end, car.category)
     if(period_start > period_end):
       raise RentalException(f"Start Date cannot be in the past to end date")
     
