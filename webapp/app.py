@@ -129,6 +129,14 @@ def rent():
 def points():
  return render_template('points.html')
 
+@app.route('/identify', methods=['GET'])
+def identify():
+ return render_template('identify.html')
+
+@app.route('/result', methods=['POST'])
+def result():
+ return render_template('result.html')
+
 @app.route('/logout')
 def logout():
   session.pop('customer_id', None)

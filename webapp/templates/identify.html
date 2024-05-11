@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block title %} Car Identification {% endblock %}
+
+{% block content %}
+    <div class="container"> 
+        <h1>Upload file</h1>
+        <hr>
+        <form class="form-inline" action="identify.html" method="post">
+            <div class="form-group">
+                <input type="file" name="file" class="btn btn-default">
+            </div>
+        </form>
+    </div>
+{% endblock %}
