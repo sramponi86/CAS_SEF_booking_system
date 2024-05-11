@@ -36,16 +36,20 @@
 <div class="row mt-2">
   <div class="col">
     <div class="list-group">
-      
+      {% for category in company.categories.get() %}
       <div href="#" class="list-group-item list-group-item-secondary">
-        <div class="d-flex w-100 justify-content-between">
-          <h5 class="mb-2">Available Cars</h5>
-        </div>
+        <form>
+          <input type="hidden" name="action" value="delete_category">
+          <div class="d-flex w-100 justify-content-between">
+            <h5 class="mb-2">{{ category.getLabel() }}</h5> <small><button type="submit" class="btn-close btn-sm"  title="Delete Category"name="id" value="{{ category.id }}"></button></small>
+          </div>
+          <input type="hidden" name="rq" value="{{ session['rq'] }}">
+        </form>
         <div  class="row row-cols-sm-auto g-1 align-items-center">
           <form>
             <input type="hidden" name="action" value="delete_car">
             <div class="col-12">
-              {% for car in company.cars.get() %}
+              {% for car in company.cars.find_by_category_id(category.id) %}
               <div class="btn-group mb-1" role="group">
                 <button type="button" class="btn btn-secondary btn-sm"><span class="bi-car-front-fill"></span> {{car.getLabel()}}</button>
                 <button type="submit" class="btn btn-secondary btn-sm " name="id" value="{{ car.id }}" title="Delete Car"><span class="bi-x"></span></button>
@@ -63,12 +67,28 @@
                 <button class="btn btn-secondary" type="submit"><span class="bi-plus"  title="Add Car"></span></button>
               </div>
             </div>
+            <input type="hidden" name="category_id" value="{{ category.id }}">
             <input type="hidden" name="rq" value="{{ session['rq'] }}">
           </form>
         </div>
       </div>
-      
+      {% endfor %}
     </div>
+  </div>
+</div>
+<div class="row mt-3">
+  <div class="col">
+    <form class="row row-cols-sm-auto g-1 align-items-center">
+      <input type="hidden" name="action" value="add_category">
+      <div class="col-12">
+        <label for="category_name" class="form-label">Add Category</label>
+        <div class="input-group">
+          <input type="text" class="form-control" placeholder="Car category name" id="category_name" name="name" required>
+          <button class="btn btn-secondary" type="submit"  title="Add Category">Add</button>
+        </div>
+      </div>
+      <input type="hidden" name="rq" value="{{ session['rq'] }}">
+    </form>
   </div>
 </div>
 {% else %}
