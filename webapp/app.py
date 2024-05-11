@@ -4,12 +4,21 @@ from rental.company import Company
 from rental.exceptions import RentalException
 import traceback
 import pickle
+import os
 from os.path import exists
 from datetime import date
 from pathlib import Path
 import logging
+import torch
 
 app = Flask(__name__)
+
+def ValuePredictor(to_predict_image):
+    
+    loaded_model = torch.jit.load("./model/stanfordcars-cnn.pth")
+    #pickle.load(open("./model/stanfordcars-cnn.pth", "rb"))
+    result = loaded_model.predict(to_predict_image)
+    return result
 
 app.secret_key = "super secret key"
 company: Company = None
@@ -139,7 +148,14 @@ def identify():
 
 @app.route('/result', methods=['POST'])
 def result():
- return render_template('result.html')
+ if request.method == 'POST':
+    uploaded_file = request.files['file']
+    if uploaded_file.filename != '':
+      image_path = os.path.join('static', uploaded_file.filename)
+      uploaded_file.save(image_path)
+      result = ValuePredictor(image_path)
+      print("result", result)
+ return render_template('result.html', prediction = result)
 
 @app.route('/logout')
 def logout():
