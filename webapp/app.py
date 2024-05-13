@@ -10,14 +10,22 @@ from datetime import date
 from pathlib import Path
 import logging
 import torch
+import torchvision.transforms as transforms
 
 app = Flask(__name__)
 
 def ValuePredictor(to_predict_image):
     
     loaded_model = torch.jit.load("./model/stanfordcars-cnn.pth")
-    #pickle.load(open("./model/stanfordcars-cnn.pth", "rb"))
-    result = loaded_model.predict(to_predict_image)
+    transformation = transforms.Compose([
+        transforms.Resize(256),
+        transforms.CenterCrop(224),
+        transforms.ToTensor(),
+        transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
+    ])
+    print("model trz")
+    image = transformation(to_predict_image).unsqueeze(0)
+    result = loaded_model(image)
     return result
 
 app.secret_key = "super secret key"
@@ -144,17 +152,30 @@ def points():
 
 @app.route('/identify', methods=['GET'])
 def identify():
+ print("Hello")
+ """ if request.method == 'POST':
+    uploaded_file = request.files['file']
+    if uploaded_file.filename != '':
+      print("Hello 2")
+      #image_path = os.path.join('static', uploaded_file.filename)
+      #uploaded_file.save(image_path)
+      result = ValuePredictor(uploaded_file)
+      print("result", result)
+      return render_template('result.html', prediction = result) """
  return render_template('identify.html')
 
 @app.route('/result', methods=['POST'])
 def result():
  if request.method == 'POST':
+    print("Hello 2")
     uploaded_file = request.files['file']
     if uploaded_file.filename != '':
+      print("Hello 3")
       image_path = os.path.join('static', uploaded_file.filename)
       uploaded_file.save(image_path)
       result = ValuePredictor(image_path)
       print("result", result)
+ result = "Hello !!!"
  return render_template('result.html', prediction = result)
 
 @app.route('/logout')
