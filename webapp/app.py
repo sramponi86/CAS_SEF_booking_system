@@ -152,8 +152,8 @@ def points():
 
 @app.route('/identify', methods=['GET'])
 def identify():
- print("Hello")
- """ if request.method == 'POST':
+ print("test 1")
+ """ if request.method == 'PUT':
     uploaded_file = request.files['file']
     if uploaded_file.filename != '':
       print("Hello 2")
@@ -164,8 +164,9 @@ def identify():
       return render_template('result.html', prediction = result) """
  return render_template('identify.html')
 
-@app.route('/result', methods=['POST'])
+@app.route('/identify', methods=['POST'])
 def result():
+ print("Hi test")
  if request.method == 'POST':
     print("Hello 2")
     uploaded_file = request.files['file']
