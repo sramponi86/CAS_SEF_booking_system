@@ -5,10 +5,14 @@
     <div class="container"> 
         <h1>Upload file</h1>
         <hr>
-        <div class="form-group">
-            <input type="file" name="file" class="btn btn-default">
+        <form action="{{ url_for('identify') }}" enctype="multipart/form-data" method="POST">
+            <input name="img" type="file"/>
+            <input type="submit"/>
+        </form>
+        <!-- <div class="form-group">
+            <input type="file" name="image" class="btn btn-default">
             <form class="form-inline" method="POST">
             <input type="submit" value="Submit">
-        </form>
-    </div>
+            </form>
+        </div> -->
 {% endblock %}

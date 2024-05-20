@@ -10,23 +10,78 @@ from datetime import date
 from pathlib import Path
 import logging
 import torch
+import torch.nn as nn
+import torch.nn.functional as F
 import torchvision.transforms as transforms
+from torchvision import models
+from werkzeug.utils import secure_filename
+from PIL import Image
 
 app = Flask(__name__)
 
-def ValuePredictor(to_predict_image):
+upload = 'C:/Users/diabomba/Desktop/ETH_SEF_Daunting_Doves/team05/uploads'
+ 
+app.config['UPLOAD'] = upload
+
+def accuracy(outputs, labels):
+    _, preds = torch.max(outputs, dim=1)
+    return torch.tensor(torch.sum(preds == labels).item() / len(preds))
+
+class ImageClassificationBase(nn.Module):
+    def training_step(self, batch):
+        images, labels = batch 
+        out = self(images)                  # Generate predictions
+        loss = F.cross_entropy(out, labels) # Calculate loss
+        return loss
     
-    loaded_model = torch.jit.load("./model/stanfordcars-cnn.pth")
+    def validation_step(self, batch):
+        images, labels = batch 
+        out = self(images)                    # Generate predictions
+        loss = F.cross_entropy(out, labels)   # Calculate loss
+        acc = accuracy(out, labels)           # Calculate accuracy
+        return {'val_loss': loss.detach(), 'val_acc': acc}
+        
+    def validation_epoch_end(self, outputs):
+        batch_losses = [x['val_loss'] for x in outputs]
+        epoch_loss = torch.stack(batch_losses).mean()   # Combine losses
+        batch_accs = [x['val_acc'] for x in outputs]
+        epoch_acc = torch.stack(batch_accs).mean()      # Combine accuracies
+        return {'val_loss': epoch_loss.item(), 'val_acc': epoch_acc.item()}
+    
+    def epoch_end(self, epoch, result):
+        print("Epoch [{}], train_loss: {:.4f}, val_loss: {:.4f}, val_acc: {:.4f}".format(
+            epoch, result['train_loss'], result['val_loss'], result['val_acc']))
+
+class StanfordCarsModel(ImageClassificationBase):
+    def __init__(self, num_classes, pretrained=True):
+        super().__init__()
+        # Use a pretrained model
+        self.network = models.resnet34(pretrained=pretrained)
+        # Replace last layer
+        self.network.fc = nn.Linear(self.network.fc.in_features, num_classes)
+
+    def forward(self, xb):
+        return self.network(xb)
+
+def ValuePredictor(to_predict_image_path):
+    model = StanfordCarsModel(196)
+    model.load_state_dict(torch.load('C:/Users/diabomba/Desktop/ETH_SEF_Daunting_Doves/team05/model/stanfordcars-cnn.pth', map_location=torch.device('cpu')))
+    #torch.load("C:/Users/diabomba/Desktop/ETH_SEF_Daunting_Doves/team05/model/stanfordcars-cnn.pt")
+    print("test 455")
     transformation = transforms.Compose([
         transforms.Resize(256),
         transforms.CenterCrop(224),
         transforms.ToTensor(),
         transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
     ])
+    image_to_predict = Image.open(to_predict_image_path)
+    image = transformation(image_to_predict).unsqueeze(0)
+    #images = image.reshape(-1, 28*28)
+    model.eval()   
     print("model trz")
-    image = transformation(to_predict_image).unsqueeze(0)
-    result = loaded_model(image)
-    return result
+    result = model(image)
+    _, preds  = torch.max(result, dim=1)
+    return preds.item()
 
 app.secret_key = "super secret key"
 company: Company = None
@@ -150,34 +205,19 @@ def rent():
 def points():
  return render_template('points.html')
 
-@app.route('/identify', methods=['GET'])
+@app.route('/identify', methods=['GET', 'POST'])
 def identify():
- print("test 1")
- """ if request.method == 'PUT':
-    uploaded_file = request.files['file']
-    if uploaded_file.filename != '':
-      print("Hello 2")
-      #image_path = os.path.join('static', uploaded_file.filename)
-      #uploaded_file.save(image_path)
-      result = ValuePredictor(uploaded_file)
-      print("result", result)
-      return render_template('result.html', prediction = result) """
- return render_template('identify.html')
-
-@app.route('/identify', methods=['POST'])
-def result():
- print("Hi test")
  if request.method == 'POST':
-    print("Hello 2")
-    uploaded_file = request.files['file']
-    if uploaded_file.filename != '':
-      print("Hello 3")
-      image_path = os.path.join('static', uploaded_file.filename)
-      uploaded_file.save(image_path)
-      result = ValuePredictor(image_path)
-      print("result", result)
- result = "Hello !!!"
- return render_template('result.html', prediction = result)
+   uploaded_file = request.files['img']
+   filename = secure_filename(uploaded_file.filename)
+   image_path = os.path.join(app.config['UPLOAD'], filename)
+   uploaded_file.save(image_path)
+   print("Hello 3")
+   result = ValuePredictor(image_path)
+   print("result", result)
+   #result = "Hello !!!"
+   return render_template('result.html', prediction = result)
+ return render_template('identify.html')
 
 @app.route('/logout')
 def logout():
