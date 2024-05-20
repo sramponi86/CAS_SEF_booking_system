@@ -16,10 +16,11 @@ import torchvision.transforms as transforms
 from torchvision import models
 from werkzeug.utils import secure_filename
 from PIL import Image
+from model.carClasses import car_classes_list
 
 app = Flask(__name__)
 
-upload = 'C:/Users/diabomba/Desktop/ETH_SEF_Daunting_Doves/team05/uploads'
+upload = 'C:/Users/diabomba/Desktop/ETH_SEF_Daunting_Doves/team05/static/'
  
 app.config['UPLOAD'] = upload
 
@@ -66,8 +67,6 @@ class StanfordCarsModel(ImageClassificationBase):
 def ValuePredictor(to_predict_image_path):
     model = StanfordCarsModel(196)
     model.load_state_dict(torch.load('C:/Users/diabomba/Desktop/ETH_SEF_Daunting_Doves/team05/model/stanfordcars-cnn.pth', map_location=torch.device('cpu')))
-    #torch.load("C:/Users/diabomba/Desktop/ETH_SEF_Daunting_Doves/team05/model/stanfordcars-cnn.pt")
-    print("test 455")
     transformation = transforms.Compose([
         transforms.Resize(256),
         transforms.CenterCrop(224),
@@ -76,9 +75,7 @@ def ValuePredictor(to_predict_image_path):
     ])
     image_to_predict = Image.open(to_predict_image_path)
     image = transformation(image_to_predict).unsqueeze(0)
-    #images = image.reshape(-1, 28*28)
     model.eval()   
-    print("model trz")
     result = model(image)
     _, preds  = torch.max(result, dim=1)
     return preds.item()
@@ -212,11 +209,8 @@ def identify():
    filename = secure_filename(uploaded_file.filename)
    image_path = os.path.join(app.config['UPLOAD'], filename)
    uploaded_file.save(image_path)
-   print("Hello 3")
    result = ValuePredictor(image_path)
-   print("result", result)
-   #result = "Hello !!!"
-   return render_template('result.html', prediction = result)
+   return render_template('result.html', prediction = car_classes_list[result], predicted_img = filename)
  return render_template('identify.html')
 
 @app.route('/logout')

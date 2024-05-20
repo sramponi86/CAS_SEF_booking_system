@@ -4,5 +4,6 @@
 {% block content %}
 <body>
     <h1> {{ prediction }}</h1>
+    <img src="{{ url_for('static', filename=predicted_img) }}"/>
 </body>
 {% endblock %}
