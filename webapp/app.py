@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, flash, session, redirect, url_for
+from flask import Flask, render_template, request, flash, session, redirect, url_for, send_from_directory
 from rental import controller
 from rental.company import Company
 from rental.exceptions import RentalException
@@ -20,7 +20,7 @@ from model.carClasses import car_classes_list
 
 app = Flask(__name__)
 
-upload = 'C:/Users/diabomba/Desktop/ETH_SEF_Daunting_Doves/team05/static/'
+upload = 'C:/Users/diabomba/Desktop/ETH_SEF_Daunting_Doves/team05/webapp/static/'
  
 app.config['UPLOAD'] = upload
 
