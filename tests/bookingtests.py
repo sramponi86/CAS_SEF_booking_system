@@ -65,6 +65,15 @@ class BookingsTests(unittest.TestCase):
     bookings.append(Booking(1, self.customer, self.car, dt.date(2024, 3, 7), dt.date(2024, 4, 7), "A"))
     self.assertEqual(len(self.bookings.get()), 0, "bookings not retrieved")
 
+#  def test_add_by_category_id(self):
+ #   customer = self.company.customers.add("TestCustomer")
+ #   category = self.company.categories.add("A")
+ #   car = self.company.cars.add('Bon Voyage', 'red', category.id)
+ #   start_date = date.today()
+ #   end_date = start_date + timedelta(days=7)
+ #   booking = self.bookings.add_by_category_id(customer.id, start_date, end_date, category.id)
+ #   self.assertIn(booking, self.bookings.get(), "booking not added")
+
   def test_delete(self):
     booking = self.bookings.add(self.customer.id, dt.date(2024, 3, 7), dt.date(2024, 4, 7), self.car.id)
     self.bookings.delete(booking.id)
