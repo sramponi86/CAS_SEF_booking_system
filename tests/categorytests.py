@@ -23,3 +23,4 @@ class CategoryTests(unittest.TestCase):
     self.assertCountEqual([cat1, cat2], self.categories.categories, "categories not added")
 
 
+
