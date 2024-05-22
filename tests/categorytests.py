@@ -34,6 +34,17 @@ class CategoryTests(unittest.TestCase):
     self.assertTrue(self.categories.contains("B"), "wrong negative results")
     self.assertFalse(self.categories.contains("C"), "wrong positive results")
 
+  def test_find_by_id(self):
+    cat1 = self.categories.add("A")
+    cat2 = self.categories.add("B")
+    self.assertEqual(self.categories.find_by_id(cat1.id), cat1, "category not found by id")
+
+  def test_find_by_name(self):
+    cat1 = self.categories.add("A")
+    cat2 = self.categories.add("B")
+    self.assertEqual(self.categories.find_by_name(cat1.name), cat1, "category not found by id")
+
+
 
 
 
