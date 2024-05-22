@@ -17,4 +17,9 @@ class CategoryTests(unittest.TestCase):
     self.categories.add("B")
     self.assertEqual(len(self.categories.get()), 2, 'categories not retrieved')
 
+  def test_add(self):
+    cat1 = self.categories.add("A")
+    cat2 = self.categories.add("B")
+    self.assertCountEqual([cat1, cat2], self.categories.categories, "categories not added")
+
 
