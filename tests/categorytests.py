@@ -8,6 +8,10 @@ class CategoryTests(unittest.TestCase):
   def setUp(self):
     self.company = Company(name="TestComp")
     self.categories = Categories(self.company)
+           
+  def test_get_label(self):
+    category = Category(1, "A")
+    self.assertEqual(category.getLabel(), "A (1)", "wrong label delivered")
   
   def test_get_empty(self):
     self.assertEqual(self.categories.get(), [], 'categories not retrieved')
@@ -38,18 +42,16 @@ class CategoryTests(unittest.TestCase):
     cat1 = self.categories.add("A")
     cat2 = self.categories.add("B")
     self.assertEqual(self.categories.find_by_id(cat1.id), cat1, "category not found by id")
+  
+  def test_find_by_id_error(self):
+    with self.assertRaises(RentalException):
+      self.categories.find_by_id(999999)
 
   def test_find_by_name(self):
     cat1 = self.categories.add("A")
     cat2 = self.categories.add("B")
     self.assertEqual(self.categories.find_by_name(cat1.name), cat1, "category not found by id")
-       
-  def test_get_label(self):
-    category = Category(1, "A")
-    self.assertEqual(category.getLabel(), "A (1)", "wrong label delivered")
 
-
-
-
-
-
+  def test_find_by_name_error(self):
+    with self.assertRaises(RentalException):
+      self.categories.find_by_name("Nonexistent") 
