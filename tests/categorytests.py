@@ -6,7 +6,8 @@ from rental.exceptions import RentalException
 
 class CategoryTests(unittest.TestCase):
   def setUp(self):
-    pass
+    self.company = Company(name="TestComp")
+    self.categories = Categories(self.company)
 
   def test_get_empty(self):
     self.assertEqual(self.categories.get(), [], 'categories not retrieved')
@@ -15,5 +16,5 @@ class CategoryTests(unittest.TestCase):
     self.categories.add("A")
     self.categories.add("B")
     self.assertEqual(len(self.categories.get()), 2, 'categories not retrieved')
-    
+
 
