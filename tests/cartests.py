@@ -46,7 +46,7 @@ class CarsTests(unittest.TestCase):
     car2 = self.cars.add('VW Jetta', 'green', "B")
     found_cars = self.cars.find_by_category_id("A")
     self.assertIn(car1, found_cars, "car not found by category")
-    self.assertIn(car2, found_cars, "wrong car found by category")
+    self.assertNotIn(car2, found_cars, "wrong car found by category")
 
   def test_find_by_id(self):
     car1 = self.cars.add('Bon Voyage', 'red', "A")
