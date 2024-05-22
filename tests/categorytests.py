@@ -28,4 +28,12 @@ class CategoryTests(unittest.TestCase):
     self.categories.delete(category.id)
     self.assertNotIn(category, self.categories.categories, "category not deleted")
 
+  def test_contains(self):
+    cat1 = self.categories.add("A")
+    cat2 = self.categories.add("B")
+    self.assertTrue(self.categories.contains("B"), "wrong negative results")
+    self.assertFalse(self.categories.contains("C"), "wrong positive results")
+
+
+
 
