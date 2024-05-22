@@ -8,6 +8,7 @@ class CategoryTests(unittest.TestCase):
   def setUp(self):
     self.company = Company(name="TestComp")
     self.categories = Categories(self.company)
+    self.cars = Cars(self.company)
            
   def test_get_label(self):
     category = Category(1, "A")
@@ -31,6 +32,13 @@ class CategoryTests(unittest.TestCase):
     self.categories.add("B")
     self.categories.delete(category.id)
     self.assertNotIn(category, self.categories.categories, "category not deleted")
+
+  def test_delete_with_cars(self):
+    category = self.categories.add("A")
+    car = self.cars.add('Bon Voyage', 'red', "A")
+    self.categories.delete(category.id)
+    with self.assertRaises(RentalException):
+      self.company.cars.find_by_id(car.id)
 
   def test_contains(self):
     cat1 = self.categories.add("A")
