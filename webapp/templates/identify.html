@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block title %} Car Identification {% endblock %}
+
+{% block content %}
+    <div class="container"> 
+        <h1>Upload file</h1>
+        <hr>
+        <form action="{{ url_for('identify') }}" enctype="multipart/form-data" method="POST">
+            <input name="img" type="file"/>
+            <input type="submit"/>
+        </form>
+{% endblock %}
