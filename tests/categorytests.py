@@ -22,5 +22,10 @@ class CategoryTests(unittest.TestCase):
     cat2 = self.categories.add("B")
     self.assertCountEqual([cat1, cat2], self.categories.categories, "categories not added")
 
+  def test_delete(self):
+    category = self.categories.add("A")
+    self.categories.add("B")
+    self.categories.delete(category.id)
+    self.assertNotIn(category, self.categories.categories, "category not deleted")
 
 
