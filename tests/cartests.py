@@ -12,6 +12,10 @@ class CarTests(unittest.TestCase):
     self.assertEqual(car.id, 1, 'incorrect id after construction')
     self.assertEqual(car.model, 'Opel Kadett', 'incorrect model after construction')
 
+  def test_getColor(self)
+    car = Car(1, 'Opel Kadett', 'orange', "B") 
+    self.assertEqual(car.getColor(), 'orange', 'incorrect color retrieved')
+
 class CarsTests(unittest.TestCase):
   def setUp(self):
     company = Company('Šmertz')
