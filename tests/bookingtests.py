@@ -5,7 +5,7 @@ from rental.bookings import Booking, Bookings
 from rental.exceptions import RentalException
 from rental.customers import Customer
 from rental.cars import Car
-from rental.categories import Categories
+from rental.categories import Category,Categories
 
 class BookingTests(unittest.TestCase):
   def setUp(self):
@@ -26,7 +26,8 @@ class BookingsTests(unittest.TestCase):
   def setUp(self):
     company = Company('Šmertz')
     category = Categories(company)
-    self.car = company.cars.add('D12', 'blue', category)
+    self.category = company.categories.add('A')
+    self.car = company.cars.add('D12', 'blue', self.category.id)
     self.customer = company.customers.add('Dandy McDuck')
     self.bookings = company.bookings
 
@@ -65,14 +66,16 @@ class BookingsTests(unittest.TestCase):
     bookings.append(Booking(1, self.customer, self.car, dt.date(2024, 3, 7), dt.date(2024, 4, 7), "A"))
     self.assertEqual(len(self.bookings.get()), 0, "bookings not retrieved")
 
-#  def test_add_by_category_id(self):
- #   customer = self.company.customers.add("TestCustomer")
- #   category = self.company.categories.add("A")
- #   car = self.company.cars.add('Bon Voyage', 'red', category.id)
- #   start_date = date.today()
- #   end_date = start_date + timedelta(days=7)
- #   booking = self.bookings.add_by_category_id(customer.id, start_date, end_date, category.id)
- #   self.assertIn(booking, self.bookings.get(), "booking not added")
+  def test_add_by_category_id(self):
+    start_date = dt.date.today()
+    end_date = start_date + dt.timedelta(days=7)   
+    booking = self.bookings.add_by_category_id(self.customer.id, start_date, end_date, category_id=self.category.id)
+    self.assertIn(booking, self.bookings.get(), "Booking not added")
+    self.assertEqual(booking.customer, self.customer, "Incorrect customer in booking")
+    self.assertEqual(booking.car, self.car, "Incorrect car in booking")
+    self.assertEqual(booking.period_start, start_date, "Incorrect start date in booking")
+    self.assertEqual(booking.period_end, end_date, "Incorrect end date in booking")
+    self.assertEqual(booking.category, self.category.id, "Incorrect category in booking")
 
   def test_delete(self):
     booking = self.bookings.add(self.customer.id, dt.date(2024, 3, 7), dt.date(2024, 4, 7), self.car.id)
