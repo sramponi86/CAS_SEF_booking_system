@@ -104,7 +104,7 @@ class BookingsTests(unittest.TestCase):
 
   def test_add_car_id_with_false_date_exception(self):
     with self.assertRaises(Exception):
-      self.bookings.add(self.customer.id, dt.date(2024, 4), dt.date(2024, 4), self.car.id)
+      self.bookings.add(self.customer.id, dt.date(2024, 4), dt.date(2024, 3), self.car.id)
 
 if __name__ == '__main__':
   unittest.main()
