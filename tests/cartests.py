@@ -12,6 +12,10 @@ class CarTests(unittest.TestCase):
     self.assertEqual(car.id, 1, 'incorrect id after construction')
     self.assertEqual(car.model, 'Opel Kadett', 'incorrect model after construction')
 
+  def test_getColor(self):
+    car = Car(1, 'Opel Kadett', 'orange', "B") 
+    self.assertEqual(car.getColor(), 'orange', 'Incorrect color retrieved')
+
 class CarsTests(unittest.TestCase):
   def setUp(self):
     company = Company('Šmertz')
@@ -40,6 +44,13 @@ class CarsTests(unittest.TestCase):
     self.cars.add('VW Jetta', 'green', "B")
     self.cars.delete(car.id)
     self.assertNotIn(car, self.cars.cars, "car not deleted")
+
+  def test_find_by_category(self):
+    car1 = self.cars.add('Bon Voyage', 'red', "A")
+    car2 = self.cars.add('VW Jetta', 'green', "B")
+    found_cars = self.cars.find_by_category_id("A")
+    self.assertIn(car1, found_cars, "car not found by category")
+    self.assertNotIn(car2, found_cars, "wrong car found by category")
 
   def test_find_by_id(self):
     car1 = self.cars.add('Bon Voyage', 'red', "A")
