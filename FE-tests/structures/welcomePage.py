@@ -1,7 +1,7 @@
 from playwright.async_api import Page, expect
 from structures.basePage import BasePage
 
-class AdminPage(BasePage):
+class WelcomePage(BasePage):
     def __init__(self, page: Page):
         super().__init__(page)
 
