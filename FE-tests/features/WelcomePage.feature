@@ -9,4 +9,4 @@ Scenario: test
 Scenario: test
     Given i navigate to the Welcome page
     When i click to admin button
-    Then welcome page is visible
+    Then user management section is visible

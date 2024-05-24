@@ -1,6 +1,7 @@
 from playwright.async_api import Page, expect, async_playwright
 from behave import *
 from structures.welcomePage import WelcomePage
+from structures.adminPage import AdminPage
 from behave.api.async_step import async_run_until_complete
 
 use_step_matcher("cfparse")
@@ -26,7 +27,9 @@ async def admin_button_click(context):
     await welcome_page.click_admin_button()
     #pass
 
-@then('admin page is visible')
+@then('user management section is visible')
 @async_run_until_complete
 async def admin_button_check(context):
-    pass
+    admin_page = AdminPage(context.page)
+    await admin_page.check_user_management_header_visible()
+    #pass
