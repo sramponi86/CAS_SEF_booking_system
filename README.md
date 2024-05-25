@@ -19,6 +19,7 @@ Please pay attention eventually to the interpreter choosen to be used.
 # Frontend tests
 
 To run the front end tests and the corresponding scenarios covering the requirements
-- go to the terminal
+- start as usual the webapp
+- go to a new terminal window
 - move to the FE-tests folder level
 - execute "behave --tags="@test"" (note that the tags are the ones that are related to the scenarios to be run)
