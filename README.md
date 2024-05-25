@@ -1,12 +1,17 @@
-[![Pipeline Status](https://gitlab.inf.ethz.ch/PRV-LECTURERS/courses/se_cas_ais/2024_teams/team05/badges/main/pipeline.svg?key_text=Unit+Tests)](https://gitlab.inf.ethz.ch/PRV-LECTURERS/courses/se_cas_ais/2024_teams/team05/pipelines)
-[![Pipeline Status](https://gitlab.inf.ethz.ch/PRV-LECTURERS/courses/se_cas_ais/2024_teams/team05/badges/main/coverage.svg?key_text=Coverage)](https://gitlab.inf.ethz.ch/PRV-LECTURERS/courses/se_cas_ais/2024_teams/team05/pipelines)
+# Car Rental Project
 
 
-# Car Rental Project (Team 5 "Daunting Doves")
+Repository created and started from the SEF module from the ETH CAS AIS.
+Added on top of the car rental project an ML module (CNN) for image recognition and identification
+and a POC of front end regression testing using playwright and cucumber/behave
 
+# Pre-requisites
 
-This will be your team's repository for the Software Engineering Fundamentals course.
+Flask should be installed as well as torch, torchvision and their supporting libraries (numpy)
+PIL should be also installed
 
-If you are experiencing any issues feel free to book a support slot [here](https://moodle-app2.let.ethz.ch/mod/scheduler/view.php?id=1034105).
+Regarding the frontend testing , please install behave and pytest-playwright (follow official guidelines)
 
-Have fun and happy coding!
+Usual command pip install {package-name}
+
+Please pay attention eventually to the interpreter choosen to be used.
