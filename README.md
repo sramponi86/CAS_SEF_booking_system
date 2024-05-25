@@ -15,3 +15,10 @@ Regarding the frontend testing , please install behave and pytest-playwright (fo
 Usual command pip install {package-name}
 
 Please pay attention eventually to the interpreter choosen to be used.
+
+# Frontend tests
+
+To run the front end tests and the corresponding scenarios covering the requirements
+- go to the terminal
+- move to the FE-tests folder level
+- execute "behave --tags="@test"" (note that the tags are the ones that are related to the scenarios to be run)
